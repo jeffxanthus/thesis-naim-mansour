@@ -1,0 +1,53 @@
+function [x] = IRL1(A, y, N, maxIters, lambda, OptTol)
+%IRL1  - Iteratively reweighted L1  (devlopment in progress)
+%Naim Mansour
+
+iterCount=3; %If this is set to 1, unweighted L1 minimization is carried out.
+[rs cs]=size(A);
+%Initialization
+W=diag(ones(N,1));
+it=0;
+xNew=1*10^5.*ones(N,1);
+eps=1*10^(-1);
+% epsilon=chooseEpsilons(y,N);
+epsilon=0.3;
+x=zeros(N,1);
+
+%If BP: min lambda*||x||1 + ||Ax-b||2
+%Weighted BP: y=Wx, x=W^(-1)x, min lambda*||y||1 + ||AW^(-1)y-b||2
+while (abs(norm(x,1)-norm(xNew,1))>eps && it<iterCount)
+    disp(['Iteration count is now ' int2str(it)])
+    x=xNew;
+    A=A/W;
+    xNew=SolveBP(A,y,N,maxIters,lambda,OptTol);
+    xNew=W\xNew;
+    close all;
+%     subplot(2,1,1);plot(xNew)
+%     subplot(2,1,2);plot(idct(xNew))
+%     pause
+    xNew=xNew';
+    newWeights=(abs(xNew)+epsilon').^(-1);
+    W=diag(newWeights);
+    it=it+1;
+end
+x=xNew';
+
+    %Not used yet
+    function[epsilon]=chooseNewEpsilon(x)
+        %- Chooses new epsilon based on method proposed by Candès et al.
+        xSorted=sort(abs(x),2,'descend');
+
+        i0=round(rs/(4*log(N/rs))); %round introduces because integer indexing - effect?
+        xBound=x(1,i0); %Index too high, since rs is almost equal to N
+        epsilon=max(xBound,10^(-3));
+    end
+
+    function[epsilon]=chooseEpsilons(y,N)
+        freqMax=max(abs(fft(y)));
+        epsilon=[];
+        for i=1:N
+            epsilon(i,1)=((rand()+1)*0.1+1)*freqMax;
+        end
+    end
+end
+

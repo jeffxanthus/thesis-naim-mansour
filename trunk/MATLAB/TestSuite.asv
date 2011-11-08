@@ -1,0 +1,21 @@
+function [] = TestSuite()
+%TESTSUITE 
+
+dataO=[];
+SNRres=[];
+SNRmres=[];
+k=1;
+for i=[0.9 0.85 0.8];% 0.75 0.7 0.65 0.6 0.55 0.5];
+    disp(['Iteration ' int2str(k) ', for clipping ratio ' int2str(i)]);
+    [dataOrig, reconstruction, SNR, SNRm]=Simulation(i,1,1);
+    SNRres=[SNRres SNR];
+    SNRmres=[SNRmres SNRm];
+    k=k+1;
+end
+dataO=dataOrig;
+
+close all;
+subplot(2,1,1);plot(SNRres);
+axis([0 max(i) 0 0.2]);
+subplot(2,1,2);plot(SNRmres);
+axis([0 length(missingSamples) 0 0.2]);

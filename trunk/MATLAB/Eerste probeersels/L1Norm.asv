@@ -1,0 +1,7 @@
+function [output] = L1Norm(data)
+%L1NORM Takes the L1-norm of a given vector
+
+
+
+end
+

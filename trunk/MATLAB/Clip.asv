@@ -1,0 +1,49 @@
+function [output] = Clip(input,threshold,clippedAmount)
+%CLIP - Naim Mansour
+%threshold el. of [0,1]
+%Naim Mansour
+limit=threshold*max(input);
+[rs cs]=size(input);
+x=input;
+    
+if nargin == 2 
+    if(rs>1)
+        input=input';
+    end
+    for i=1:length(input)
+        if(input(1,i)>limit)
+            input(1,i)=limit;
+        end
+         if(input(1,i)<-limit)
+            input(1,i)=-limit;
+        end
+    end
+end
+
+if nargin > 2
+    for i=1:clippedAmount
+        if mod(clippedAmount,2)~=0
+            clippedAmount=clippedAmount+1;
+        end
+        [inputSorted indices]=sort(input,'descend'); %dubious, only for test purposes
+        indices=indices';
+        inputSorted=inputSorted';
+        %Upper bound
+        toReplace=indices(1:clippedAmount/2,1)';
+        for t=toReplace
+            
+        input(toReplace,:)=inputSorted(clippedAmount/2,1); 
+        %Lower bound
+        toReplace2=indices(clippedAmount/2+1:end,1)';
+        input(toReplace2,:)=inputSorted(end-(clippedAmount/2)+1,:); 
+        
+        pause
+        plot(input) 
+    end
+end
+output=input;
+
+subplot(2,1,1);plot(x);
+subplot(2,1,2);plot(output);
+end
+

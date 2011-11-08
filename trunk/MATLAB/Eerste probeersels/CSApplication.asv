@@ -1,0 +1,21 @@
+function [test_function] = CSApplication()
+%CSAPPLICATION Test of CS
+
+t=linspace(-30,30,200);
+test_function=;
+percentageVector=[80,50,30,25,10];%
+results=[];
+
+for d=percentageVector
+    results=[results CS(test_function, d)];
+end
+
+subplot(3,2,1); plot(t,test_function,'k');legend('Original signal')
+subplot(3,2,2); plot(t,test_function,'k',t,real(results(:,1)),'b+');legend('CS with 80% samples')
+subplot(3,2,3); plot(t,test_function,'k',t,real(results(:,2)),'r+');legend('CS with 50% samples')
+subplot(3,2,4); plot(t,test_function,'k',t,real(results(:,3)),'g+');legend('CS with 30% samples')
+subplot(3,2,5); plot(t,test_function,'k',t,real(results(:,4)),'y+');legend('CS with 25% samples')
+subplot(3,2,6); plot(t,test_function,'k',t,real(results(:,5)),'b+');legend('CS with 10% samples')
+
+end
+
