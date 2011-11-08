@@ -35,14 +35,14 @@ MaxS=max(input);
 MinS=min(input);
 for t=1:length(input) 
     if(input(1,t)>=MaxS || input(1,t)<=MinS)...
-        && ((t==1 || t==length(input)) || (input(1,t-1)-input(1,t+1))==0 || (((length(find(MaxS)))==1) && input(1,t)==MaxS)...
-        || (((length(find(MinS)))==1) && input(1,t)==MinS))
+        && ((t==1 || t==length(input) && clip~=1) || (input(1,t-1)-input(1,t+1))==0 || (((length(sum(input>=MaxS)))==1) && input(1,t)==MaxS)...
+        || (((length(sum(input<=MinS)))==1) && input(1,t)==MinS))SS
         origSamples=[origSamples t];
     end
 end
 origSamples=testData(:,origSamples);
 
-subplot(3,1,1);plot(origSamples,'.')
+subplot(3,1,1);plot(origSamples,'r.')
 title('Clipped values in original signal')
 subplot(3,1,2);plot(missingSamples,'.')
 title('"Clipped values" in reconstructed signal')
