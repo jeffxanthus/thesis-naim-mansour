@@ -6,10 +6,10 @@ SNRres=[];
 SNRmres=[];
 k=1;
 
-for i=[0.6 0.85];% 0.75 0.7 0.65 0.6 0.55 0.5];
+for i=[0.8 0.85];% 0.75 0.7 0.65 0.6 0.55 0.5];
     i
     disp(['Iteration ' int2str(k) ', for clipping ratio ' num2str(i)]);
-    [dataOrig, reconstruction, SNR, SNRm]=Simulation(i,1,1);
+    [dataOrig, reconstruction, dummy1, dummy2, SNR, SNRm]=Simulation(i,1,2,0);
     sound(dataOrig,44100)
     sound(reconstruction,44100)
 

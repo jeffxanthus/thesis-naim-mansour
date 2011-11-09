@@ -1,10 +1,10 @@
-function [dataToUse,reconstruction,SNR,SNRm] = Simulation(clip,size,method,clipamount)
+function [dataToUse,reconstruction,origSamples, missingSamples,SNR,SNRm] = Simulation(clip,size,method,offSet,clipamount)
 %TESTSUITE Summary of this function goes here
 %   clip: clipping percentage (between 0 & 1)
 %   size: 1=small, 2=medium, 3=large
 %   method: 1=> Ax=y, 2=>Ax+Be=y
 
-[data, largeData, mediumData, smallData, tinyData, fs, noBits]=InitializeTestVariables;
+[data, largeData, mediumData, smallData, tinyData, fs, noBits]=InitializeTestVariables(offSet);
 
 switch size
     case {0}
@@ -17,7 +17,7 @@ switch size
         dataToUse=largeData;
 end
 
-if nargin > 3
+if nargin > 4
     input=Clip(dataToUse,clip,clipamount);
 else
     input=Clip(dataToUse,clip);
@@ -35,8 +35,8 @@ MaxS=max(input);
 MinS=min(input);
 for t=1:length(input) 
     if(input(1,t)>=MaxS || input(1,t)<=MinS)...
-        && ((t==1 || t==length(input) && clip~=1) || (input(1,t-1)-input(1,t+1))==0 || (((length(sum(input>=MaxS)))==1) && input(1,t)==MaxS)...
-        || (((length(sum(input<=MinS)))==1) && input(1,t)==MinS))SS
+        && (((t==1 && input(1,t+1)-input(1,t)==0)  || (t==length(input) && input(1,t)-input(1,t-1)==0))...  
+        || ((t~=1 && t~=length(input)) && input(1,t-1)-input(1,t+1))==0)
         origSamples=[origSamples t];
     end
 end
@@ -49,7 +49,7 @@ title('"Clipped values" in reconstructed signal')
 subplot(3,1,3);plot(abs((origSamples-missingSamples)./origSamples))
 title('Relative error')
 axis([0 length(origSamples) 0 0.5])
-pause
+% pause
 SNR=Evaluation(dataToUse(1:length(reconstruction),1),reconstruction,fs,noBits)
 SNRm=Evaluation(5*origSamples',5*missingSamples',fs,noBits)
 end

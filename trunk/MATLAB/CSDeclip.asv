@@ -20,10 +20,8 @@ MinS=min(data);
 for t=1:cs2 %border values possibly added to the clipped values - SOLVED
     if(data(1,t)<MaxS && data(1,t)>MinS)
         samples=[samples data(1,t)];
-    elseif((t==1 || t==cs2)... 
-            || (((length(find(MaxS)))==1) && data(1,t)==MaxS)...
-            || (((length(find(MinS)))==1) && data(1,t)==MinS)...
-            || (data(1,t-1)-data(1,t+1))==0)
+    elseif(((t==1 && data(1,t+1)-data(1,t)==0)  || (t==cs2 && data(1,t)-data(1,t-1)==0))... 
+            || ((t~=1 && t~=cs2) && data(1,t-1)-data(1,t+1))==0)
         M=[M t];
         samples=[samples 0];
         if data(1,t)==MaxS
@@ -32,6 +30,7 @@ for t=1:cs2 %border values possibly added to the clipped values - SOLVED
             Mn=[Mn t];
         end
     else
+        samples=[samples data(1,t)];
     end
 end
 samples=samples';
@@ -51,20 +50,19 @@ Mpos=zeros(N,1);
 Mpos(Mp,:)=1;
 Mneg=zeros(N,1);
 Mneg(Mn,:)=1;
-MclA=diag(Mneg-Mpos)*B
+MclA=diag(Mneg-Mpos)*B;
 
-plot(MclA*samples,'.')
-pause
+% pause
 %INHERENT PROBLEM, size of A needs to be consistent, not possible with only
 %samples available....
 %....
 
 %Solve the constrained L1 optimization (with lambda regularization)
-% x=IRL1(A,samples,N,50,0.01,1e-4); %Development in progress
+% x=IRL1(A,samples,N,50,0.01,1e-3); %Development in progress
 % x=SolveBP(A,samples,N,50,0,1e-4); %Investigate parameter impact
-% x=SolveOMP(A,samples,N,50); %--FAST FAVORITE SO FAR
+x=SolveOMP(A,samples,N,50); %--FAST FAVORITE SO FAR
 % x=SolveLasso(A,samples,N); --VERY SLOW, NOT THAT ACCURATE
-x=OMPDeclip(A,samples,N,MclA,50); %--FAST FAVORITE SO FAR
+% x=OMPDeclip(A,samples,N,MclA,50); %--FAST FAVORITE SO FAR
 
 r=idct(x);
 

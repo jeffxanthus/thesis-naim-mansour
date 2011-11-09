@@ -20,10 +20,8 @@ MinS=min(data);
 for t=1:cs2 %border values possibly added to the clipped values - SOLVED
     if(data(1,t)<MaxS && data(1,t)>MinS)
         samples=[samples data(1,t)];
-    elseif((t==1 || t==cs2)... 
-            || (((length(find(MaxS)))==1) && data(1,t)==MaxS)...
-            || (((length(find(MinS)))==1) && data(1,t)==MinS)...
-            || (data(1,t-1)-data(1,t+1))==0)
+    elseif(((t==1 && data(1,t+1)-data(1,t)==0)  || (t==cs2 && data(1,t)-data(1,t-1)==0))... 
+            || ((t~=1 && t~=cs2) && data(1,t-1)-data(1,t+1))==0)
         M=[M t];
         samples=[samples 0];
         if data(1,t)==MaxS
@@ -32,6 +30,7 @@ for t=1:cs2 %border values possibly added to the clipped values - SOLVED
             Mn=[Mn t];
         end
     else
+        samples=[samples data(1,t)];
     end
 end
 samples=samples';
