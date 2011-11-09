@@ -17,12 +17,10 @@ samples=[];
 MaxS=max(data);
 MinS=min(data);
 for t=1:cs2  
-    if(data(1,t)<max(data) && data(1,t)>min(data))
+    if(data(1,t)<MaxS && data(1,t)>MinS)
         X=[X t];
-    elseif((t==1 || t==cs2)... 
-            || (((length(find(MaxS)))==1) && data(1,t)==MaxS)...
-            || (((length(find(MinS)))==1) && data(1,t)==MinS)...
-            || (data(1,t-1)-data(1,t+1))==0)
+    elseif(((t==1 && data(1,t+1)-data(1,t)==0)  || (t==cs2 && data(1,t)-data(1,t-1)==0))... 
+            || ((t~=1 && t~=cs2) && data(1,t-1)-data(1,t+1))==0)
         E=[E t];
         if data(1,t)==MaxS
             Mp=[Mp t];
@@ -30,13 +28,14 @@ for t=1:cs2
             Mn=[Mn t];
         end
     else
+        X=[X t];
     end
 end
 samples=data';
 
 %Remove all rows in the DCT base, according to the sampling matrix!
 A=DCTBase(N,N,-1);
-% A(E,:)=[]; %Important, removing the row, not making it zero!
+% A(E,:)=0; %Important, removing the row, not making it zero!
 
 if max(A)==0
     disp('Entire frame is clipped.')
@@ -45,11 +44,12 @@ end
 
 %Remove all rows (NO, COLUMNS!!! -- in case of rows, do pinv(B)*B) in 
 %the unit base, according to the error matrix
-B=eye(length(samples),N);
-I=eye(length(samples));
-B(:,X)=[];
+B=eye(N,N);
+I=eye(N);
+B(:,X)=0;
 
 Re=I-B*pinv(B);
+
 delta=eye(N);
 for i=1:N
     delta(i,i)=1./norm(Re*A(:,i),2);
