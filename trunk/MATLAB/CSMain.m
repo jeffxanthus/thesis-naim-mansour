@@ -22,7 +22,7 @@ end
 [rs cs]=size(signal);
 fs=44000; %Artificial - testing purposes
 %Parameter selection
-frameLength=10; %in milliseconds
+frameLength=20; %in milliseconds
 if mod(fs*frameLength,1000)~=0
     disp('Infeasible sampling frequency, using default')
     fs=44.1*10^3;
@@ -54,8 +54,6 @@ for t=1:rs %border values possibly added to the clipped values -OK NOW
     if (signal(t,1)>=MaxS || signal(t,1)<=MinS)...
         && (((t==1 && signal(t+1,1)-signal(t,1)==0)  || (t==cs && signal(t,1)-signal(t-1,1)==0))... 
         || ((t~=1 && t~=cs) && signal(t-1,1)-signal(t+1,1))==0)
-%         || (((length(find(MaxS)))==1) && signal(t,1)==MaxS)...
-%         || (((length(find(MinS)))==1) && signal(t,1)==MinS))
         Miss=[Miss t];
     end
 end

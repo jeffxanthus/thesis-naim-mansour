@@ -44,7 +44,7 @@ end
 
 %Remove all rows (NO, COLUMNS!!! -- in case of rows, do pinv(B)*B) in 
 %the unit base, according to the error matrix
-B=eye(N,N);
+B=1.5*eye(N,N);
 I=eye(N);
 B(:,X)=0;
 

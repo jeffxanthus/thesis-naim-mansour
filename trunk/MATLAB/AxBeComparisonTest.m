@@ -3,8 +3,8 @@ function [dataOrig1, reconstruction1, reconstruction2] = AxBeComparisonTest(clip
 
 offSet=(round(rand()*20000))+(round(rand()*100000));
 
-[dataOrig1, reconstruction1, origSamples1, missingSamples1 SNR1, SNRm1]=Simulation(clip,size,1,offSet);
-[dataOrig2, reconstruction2, origSamples2, missingSamples2 SNR2, SNRm2]=Simulation(clip,size,2,offSet);
+[dataOrig1, reconstruction1, origSamples1, missingSamples1, SNR1, SNRm1]=Simulation(clip,size,1,offSet);
+[dataOrig2, reconstruction2, origSamples2, missingSamples2, SNR2, SNRm2]=Simulation(clip,size,2,offSet);
 
 subplot(4,2,1);plot(origSamples1,'r.')
 title('Clipped values in original signal (Ax=y)')
@@ -25,6 +25,9 @@ title('Reconstruction with Ax=y')
 
 subplot(4,2,8);plot(reconstruction2)
 title('Reconstruction with Ax+Be=y')
+
+SNR1
+SNR2
 
 SNRm1
 SNRm2
