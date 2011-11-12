@@ -38,6 +38,9 @@ function [sols, iters, activationHist] = OMPDeclip(A, y, N, MclA, maxIters, lamb
 %   A is the m by dim implicit matrix implemented by the function. I is a
 %   subset of the columns of A, i.e. a subset of 1:dim of length n. x is a
 %   vector of length n is mode = 1, or a vector of length m is mode = 2.
+global B
+global yU
+
 
 if nargin < 9,
 	OptTol = 1e-5;
@@ -75,8 +78,8 @@ res = y;
 normy = norm(y);
 resnorm = normy;             
 done = 0;
-eps=0.01;
-offSet=max(abs(y))-eps;
+eps=0.9;
+offSet=max(abs(y))*eps;
 
 while ~done
     if (explicitA)
@@ -93,7 +96,12 @@ while ~done
 
 %     x = fmins('normax-b.m', x0, options, A, b); ALTERNATIVE
     x(activeSet)=lsqlin(A(:,activeSet),y,MclA(:,activeSet),offSet*ones(length(MclA),1));
-    
+%     B=A(:,activeSet);
+%     MclB=MclA(:,activeSet);
+%     yU=y;
+%     options = optimset('Algorithm','interior-point','Display','off');
+%     [x(activeSet), fval]=fmincon(@L2Norm,yU(activeSet,:),MclB,offSet*ones(length(MclB),1),[],[],[],[],[],options);
+
     % Compute new residual
     if (explicitA)
         res = y - A(:,activeSet) * x(activeSet);
