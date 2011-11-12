@@ -57,10 +57,18 @@ end
 A=Re*A*delta;
 
 %Solve the constrained L1 optimization (with lambda regularization)
-% Delta_x=IRL1(A,samples,N,50,0.01,1e-4); %Development in progress
-% Delta_x=SolveLasso(A,samples,N); --VERY SLOW, NOT THAT ACCURATE
-% Delta_x=SolveBP(A,samples,N,50,0.01,1e-4); %Investigate parameter impact
-Delta_x=SolveOMP(A,samples,N,50); %--FAST BUT INACCURATE
+switch methodChoice
+    case 1
+        Delta_x=SolveOMP(A,samples,N,50); %--FAST FAVORITE SO FAR
+    case 2
+        Delta_x=OMPDeclip(A,samples,N,MclA,50); %--FAST FAVORITE SO FAR
+    case 3 
+        Delta_x=SolveBP(A,samples,N,50,0,1e-4); %Investigate parameter impact
+    case 4
+        Delta_x=IRL1(A,samples,N,50,0.01,1e-3); %Development in progress
+    case 5
+        Delta_x=SolveLasso(A,samples,N); %--VERY SLOW, NOT THAT ACCURATE
+end
 
 x=delta*Delta_x;
 

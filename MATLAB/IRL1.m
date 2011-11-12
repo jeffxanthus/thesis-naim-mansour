@@ -1,25 +1,27 @@
 function [x] = IRL1(A, y, N, maxIters, lambda, OptTol)
-%IRL1  - Iteratively reweighted L1  (devlopment in progress)
+%IRL1  - Iteratively reweighted L1  (development in progress)
 %Naim Mansour
+global fFf
 
-iterCount=3; %If this is set to 1, unweighted L1 minimization is carried out.
+iterCount=5; %If this is set to 1, unweighted L1 minimization is carried out.
 [rs cs]=size(A);
 %Initialization
 W=diag(ones(N,1));
 it=0;
 xNew=1*10^5.*ones(N,1);
 eps=1*10^(-1);
-% epsilon=chooseEpsilons(y,N);
-epsilon=0.3;
+
 x=zeros(N,1);
+x0=SolveBP(A,y,N,maxIters,lambda,OptTol);
+epsilon=chooseEpsilons(x0,N,fFf);
 
 %If BP: min lambda*||x||1 + ||Ax-b||2
 %Weighted BP: y=Wx, x=W^(-1)x, min lambda*||y||1 + ||AW^(-1)y-b||2
 while (abs(norm(x,1)-norm(xNew,1))>eps && it<iterCount)
     disp(['Iteration count is now ' int2str(it)])
     x=xNew;
-    A=A/W;
-    xNew=SolveBP(A,y,N,maxIters,lambda,OptTol);
+    B=A/W;
+    xNew=SolveBP(B,y,N,maxIters,lambda,OptTol);
     xNew=W\xNew;
     close all;
 %     subplot(2,1,1);plot(xNew)
@@ -42,11 +44,11 @@ x=xNew';
         epsilon=max(xBound,10^(-3));
     end
 
-    function[epsilon]=chooseEpsilons(y,N)
-        freqMax=max(abs(fft(y)));
+    function[epsilon]=chooseEpsilons(x0,N,f)
         epsilon=[];
+        fFf=0.95;
         for i=1:N
-            epsilon(i,1)=((rand()+1)*0.1+1)*freqMax;
+              epsilon(i,1)=(f)*x0(i,1);
         end
     end
 end

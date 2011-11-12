@@ -1,4 +1,4 @@
-function [sols, iters, activationHist] = OMPDeclip(A, y, N, MpA, MnA, maxIters, lambdaStop, solFreq, verbose, OptTol)
+function [sols, iters, activationHist] = OMPDeclip(A, y, N, MclA, maxIters, lambdaStop, solFreq, verbose, OptTol)
 % SolveOMP: Orthogonal Matching Pursuit
 % Usage
 %	[sols, iters, activationHist] = SolveOMP(A, y, N, maxIters, lambdaStop, solFreq, verbose, OptTol,Mp,Mn)
@@ -38,20 +38,23 @@ function [sols, iters, activationHist] = OMPDeclip(A, y, N, MpA, MnA, maxIters, 
 %   A is the m by dim implicit matrix implemented by the function. I is a
 %   subset of the columns of A, i.e. a subset of 1:dim of length n. x is a
 %   vector of length n is mode = 1, or a vector of length m is mode = 2.
+global A
+global samples
 
-if nargin < 10,
+
+if nargin < 9,
 	OptTol = 1e-5;
 end
-if nargin < 9,
+if nargin < 8,
     verbose = 0;
 end
-if nargin < 8,
+if nargin < 7,
     solFreq = 0;
 end
-if nargin < 7,
+if nargin < 6,
     lambdaStop = 0;
 end
-if nargin < 6,
+if nargin < 5,
     maxIters = length(y);
 end
 
@@ -75,6 +78,8 @@ res = y;
 normy = norm(y);
 resnorm = normy;             
 done = 0;
+eps=0.01;
+offSet=max(abs(y))-eps;
 
 while ~done
     if (explicitA)
@@ -86,12 +91,15 @@ while ~done
     newIndex = i(1);
     
     activeSet = [activeSet newIndex];
-    
-    A(:,activeSet)
-    ClippedSel=MpA-MnA;
-    x(activeSet)=lsqlin(A(:,activeSet),y);
-    x(activeSet)
-    
+    %TO CHECK
+%     options = optimset('LargeScale','off'); 
+
+%     x = fmins('normax-b.m', x0, options, A, b); ALTERNATIVE
+%     x(activeSet)=lsqlin(A(:,activeSet),y,MclA(:,activeSet),offSet*ones(length(MclA),1));
+    B=A(:,activeSet);
+    MclB=MclA(:,activeSet);
+    options = optimset('Algorithm','interior-point');
+    [x, fval]=fmincon(@L2Norm,init,[],[],[],[],[],[],@L2Norm,options);
     
     % Compute new residual
     if (explicitA)

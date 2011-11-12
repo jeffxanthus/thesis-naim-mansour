@@ -50,6 +50,7 @@ signal(end-(mod(rs,numberOfSamples)-2):end,:)=[];
 Miss=[];
 MaxS=max(signal);
 MinS=min(signal);
+
 for t=1:rs %border values possibly added to the clipped values -OK NOW
     if (signal(t,1)>=MaxS || signal(t,1)<=MinS)...
         && (((t==1 && signal(t+1,1)-signal(t,1)==0)  || (t==cs && signal(t,1)-signal(t-1,1)==0))... 

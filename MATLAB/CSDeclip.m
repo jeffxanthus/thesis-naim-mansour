@@ -1,6 +1,7 @@
 function [x,r] = CSDeclip(data)
 %CSDECLIP - data is already clipped signal
 %Naim Mansour
+global methodChoice
 
 [rs cs]=size(data);
 if(rs~=1)
@@ -54,15 +55,24 @@ MclA=diag(Mneg-Mpos)*B;
 
 % pause
 %INHERENT PROBLEM, size of A needs to be consistent, not possible with only
-%samples available....
+%samples available - YES already solved (introducing don't care zeros)
 %....
 
 %Solve the constrained L1 optimization (with lambda regularization)
-% x=IRL1(A,samples,N,50,0.01,1e-3); %Development in progress
-% x=SolveBP(A,samples,N,50,0,1e-4); %Investigate parameter impact
-x=SolveOMP(A,samples,N,50); %--FAST FAVORITE SO FAR
-% x=SolveLasso(A,samples,N); --VERY SLOW, NOT THAT ACCURATE
-% x=OMPDeclip(A,samples,N,MclA,50); %--FAST FAVORITE SO FAR
+switch methodChoice
+    case 1
+        x=SolveOMP(A,samples,N,50); %--FAST FAVORITE SO FAR
+    case 2
+        x=OMPDeclip(A,samples,N,MclA,50); %--FAST FAVORITE SO FAR
+    case 3 
+        x=SolveBP(A,samples,N,50,0,1e-4); %Investigate parameter impact
+    case 4
+        x=IRL1(A,samples,N,50,0.01,1e-3); %Development in progress
+    case 5
+        x=SolveLasso(A,samples,N); %--VERY SLOW, NOT THAT ACCURATE
+end
+
+% x=l1qc_logbarrier(pinv(A)*y,A,[],y,1);
 
 r=idct(x);
 
