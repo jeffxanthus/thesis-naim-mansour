@@ -62,10 +62,6 @@ if mod(numberOfSamples*(frameOverlap/100),1)~=0
     return;
 end
 
-%Keep only the part of the signal divisible into subframes
-signal(end-(mod(rs,numberOfSamples)-2):end,:)=[];
-[rs cs]=size(signal);
-
 %Used to be able to calculate SNRm
 Miss=[];
 MaxS=max(signal);
@@ -78,6 +74,13 @@ for t=1:rs %border values possibly added to the clipped values -OK NOW
         Miss=[Miss t];
     end
 end
+
+%Keep only the part of the signal divisible into subframes, the other part
+%will be processed separately (temp, maybe better approach later)
+nonMultiplePart=signal(end-(mod(rs,numberOfSamples)-2):end,:);
+signal(end-(mod(rs,numberOfSamples)-2):end,:)=[];
+[rs cs]=size(signal);
+
 
 %Division into frames
 disp('Dividing into frames...')
@@ -95,6 +98,7 @@ end
 U=[];
 [rst cst]=size(T);
 % Could be combined with previous for-loop
+
 % Apply the declipping to each frame
 disp('Declipping...')
 for j=1:cst
@@ -107,7 +111,13 @@ for j=1:cst
     subplot(2,1,1);plot(U(:,j),'-');
     subplot(2,1,2);plot(T(:,j),'-');
 end
-
+%Non-multiple part
+if(method==1)
+        [dummy nonMultipleRec]=CSDeclip(nonMultiplePart);
+    else
+        nonMultipleRec=CSDeclipAlternate(nonMultiplePart);
+end
+    
 disp('Reconstructing...')
 %Reconstruction (should work for any overlap ratio and compatible window)
 window=hann(numberOfSamples+1); %Hann window (with 50% overlap)
@@ -133,14 +143,14 @@ for k=2:cst
     result=[unalteredPart summedPart unalteredBlockPart];
     position=position+shiftAmount-1;
 end
-toc;
 
-result=result';
+result=[result nonMultipleRec'];
+toc;
 
 missingSamples=[];
 for u=Miss
     try
-        missingSamples=[missingSamples result(u,1)];
+        missingSamples=[missingSamples result(1,u)];
     catch ME
         disp('Missing sample skipped');
     end

@@ -1,8 +1,10 @@
 function [] = PerfectRecoveryTest(sparsity,length)
 %PERFECTRECOVERYTEST Summary of this function goes here
 %   Detailed explanation goes here
-close all;
+global methodChoice
 
+close all;
+methodChoice=3;
 [freq data]=SparseSignalConstructor(sparsity,length);
 method=1;
 fs=44100;
