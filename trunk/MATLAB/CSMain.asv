@@ -27,21 +27,22 @@ fs=44000; %Artificial - testing purposes
 clipped1=length(find(signal == max(signal)));
 clipped2=length(find(signal == min(signal)));
 
-maxFrameLength=0;
+maxAmountOfFrames=0;
 if ~(clipped1==1 && clipped2==1)
-    maxFrameLength=floor((rs-(clipped1+clipped2))/(2*estimateSparsity(signal)-1).^2)
+    maxAmountOfFrames=floor((rs-(clipped1+clipped2))/(2*estimateSparsity(signal)-1).^2)
 end
-rs
-while mod(rs/maxFrameLength,1)~=0
-    maxFrameLength=maxFrameLength-1;
-end
-%%
 
+
+%%TODO: choose frame length according to constraint, but also to
+%%numerical (UPPER)/psychoaccoustic (LOWER) constraints  --explain in text
 
 %Parameter selection - to be discretised later, fs only necessary for
 %playback and PEAQ
-frameLength=floor(rs/fs)
-frameLength=30; %in milliseconds
+frameLength=floor(((rs/maxAmountOfFrames)/fs)*1000)
+%Computational bound
+frameLength=min(frameLength,60)
+
+% frameLength=30; %in milliseconds
 if mod(fs*frameLength,1000)~=0
     disp('Infeasible sampling frequency, using default')
     fs=44.1*10^3;
@@ -61,10 +62,6 @@ if mod(numberOfSamples*(frameOverlap/100),1)~=0
     return;
 end
 
-%Keep only the part of the signal divisible into subframes
-signal(end-(mod(rs,numberOfSamples)-2):end,:)=[];
-[rs cs]=size(signal);
-
 %Used to be able to calculate SNRm
 Miss=[];
 MaxS=max(signal);
@@ -77,6 +74,13 @@ for t=1:rs %border values possibly added to the clipped values -OK NOW
         Miss=[Miss t];
     end
 end
+
+%Keep only the part of the signal divisible into subframes, the other part
+%will be processed separately (temp, maybe better approach later)
+nonMultiplePart=signal(end-(mod(rs,numberOfSamples)-2):end,:);
+signal(end-(mod(rs,numberOfSamples)-2):end,:)=[];
+[rs cs]=size(signal);
+
 
 %Division into frames
 disp('Dividing into frames...')
@@ -106,7 +110,7 @@ for j=1:cst
     subplot(2,1,1);plot(U(:,j),'-');
     subplot(2,1,2);plot(T(:,j),'-');
 end
-
+U=T;
 disp('Reconstructing...')
 %Reconstruction (should work for any overlap ratio and compatible window)
 window=hann(numberOfSamples+1); %Hann window (with 50% overlap)

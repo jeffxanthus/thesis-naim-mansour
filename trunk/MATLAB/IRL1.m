@@ -3,7 +3,7 @@ function [x] = IRL1(A, y, N, maxIters, lambda, OptTol)
 %Naim Mansour
 global fFf
 
-iterCount=1; %If this is set to 1, unweighted L1 minimization is carried out.
+iterCount=3; %If this is set to 1, unweighted L1 minimization is carried out.
 [rs cs]=size(A);
 %Initialization
 W=diag(ones(N,1));
