@@ -1,10 +1,12 @@
-function [dataToUse,reconstruction,origSamples, missingSamples,SNR,SNRm] = Simulation(clip,size,method,offSet,clipamount)
+function [dataToUse,reconstruction,origSamples, missingSamples,SNR,SNRm,SNROrig] = Simulation(clip,size,method,offSet,clipamount)
 %TESTSUITE Summary of this function goes here
 %   clip: clipping percentage (between 0 & 1)
 %   size: 1=small, 2=medium, 3=large
 %   method: 1=> Ax=y, 2=>Ax+Be=y
 
 [data, largeData, mediumData, smallData, tinyData, fs, noBits]=InitializeTestVariables(offSet);
+
+fs=44000;
 
 switch size
     case {0}
@@ -22,6 +24,8 @@ if nargin > 4
 else
     input=Clip(dataToUse,clip);
 end
+
+SNROrig=Evaluation(dataToUse,input',fs); 
 
 [reconstruction, missingSamples]=CSMain(input,method,fs);
 
@@ -51,6 +55,6 @@ title('Relative error')
 axis([0 length(origSamples) 0 0.5])
 % pause
 SNR=Evaluation(dataToUse(1:length(reconstruction),1),reconstruction,fs,noBits)
-SNRm=Evaluation(5*origSamples',5*missingSamples',fs,noBits)
+SNRm=Evaluation(origSamples',missingSamples',fs,noBits)
 end
 

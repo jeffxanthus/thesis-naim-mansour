@@ -3,7 +3,7 @@ function [x] = IRL1(A, y, N, maxIters, lambda, OptTol)
 %Naim Mansour
 global fFf
 
-iterCount=5; %If this is set to 1, unweighted L1 minimization is carried out.
+iterCount=1; %If this is set to 1, unweighted L1 minimization is carried out.
 [rs cs]=size(A);
 %Initialization
 W=diag(ones(N,1));
@@ -13,6 +13,7 @@ eps=1*10^(-1);
 
 x=zeros(N,1);
 x0=SolveBP(A,y,N,maxIters,lambda,OptTol);
+fFf=0.95;
 epsilon=chooseEpsilons(x0,N,fFf);
 
 %If BP: min lambda*||x||1 + ||Ax-b||2

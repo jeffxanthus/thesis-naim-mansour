@@ -2,6 +2,10 @@ function [x,r] = CSDeclip(data)
 %CSDECLIP - data is already clipped signal
 %Naim Mansour
 global methodChoice
+global A
+global samples
+
+addpath('ISD_v1.1')
 
 [rs cs]=size(data);
 if(rs~=1)
@@ -52,7 +56,8 @@ Mpos(Mp,:)=1;
 Mneg=zeros(N,1);
 Mneg(Mn,:)=1;
 MclA=diag(Mneg-Mpos)*B;
-
+eps=0.9;
+offSet=max(abs(samples))*eps;
 % pause
 %INHERENT PROBLEM, size of A needs to be consistent, not possible with only
 %samples available - YES already solved (introducing don't care zeros)
@@ -65,9 +70,12 @@ switch methodChoice
     case 2
         x=OMPDeclip(A,samples,N,MclA,50); %--FAST FAVORITE SO FAR
     case 3 
-        x=SolveBP(A,samples,N,50,0,1e-4); %Investigate parameter impact
+        x=SolveBP(A,samples,N,50,0.01,1e-4); %Investigate parameter impact
+%         options = optimset('Algorithm','interior-point','Display','on');
+%         [x, fval]=fmincon(@L1Norm,offSet*ones(N,1),MclA,offSet*ones(length(MclA),1),[],[],[],[],@L2Norm,options);
     case 4
-        x=IRL1(A,samples,N,50,0.01,1e-3); %Development in progress
+        x=IRL1(A,samples,N,50,0,1e-3); %Development in progress
+%           x=Threshold_ISD_1D(A,samples);
     case 5
         x=SolveLasso(A,samples,N); %--VERY SLOW, NOT THAT ACCURATE
 end
@@ -76,20 +84,20 @@ end
 
 r=idct(x);
 
-subplot(5,1,1);plot(data);
-title('Clipped signal')
-axis([0 N (min(data)-1) (max(data)+1)])
-subplot(5,1,2);plot(r(1:N,1));
-title('Reconstructed signal')
-axis([0 N (min(r)-1) (max(r)+1)])
-% subplot(5,1,3);plot(orig)
-% title('Original signal')
-% axis([0 N (min(orig)-1) (max(orig)+1)])
-subplot(5,1,4);plot(samples)
-title('Samples')
-axis([0 N (min(samples)-1) (max(samples)+1)])
-subplot(5,1,5);plot(abs(x))
-title('Spectral representation of reconstruction')
-axis([0 N (min(abs(x))-1) (max(abs(x))+1)])
+% subplot(5,1,1);plot(data);
+% title('Clipped signal')
+% axis([0 N (min(data)-1) (max(data)+1)])
+% subplot(5,1,2);plot(r(1:N,1));
+% title('Reconstructed signal')
+% axis([0 N (min(r)-1) (max(r)+1)])
+% % subplot(5,1,3);plot(orig)
+% % title('Original signal')
+% % axis([0 N (min(orig)-1) (max(orig)+1)])
+% subplot(5,1,4);plot(samples)
+% title('Samples')
+% axis([0 N (min(samples)-1) (max(samples)+1)])
+% subplot(5,1,5);plot(abs(x))
+% title('Spectral representation of reconstruction')
+% axis([0 N (min(abs(x))-1) (max(abs(x))+1)])
 end
 

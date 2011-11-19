@@ -1,15 +1,21 @@
 function [] = TestSuite()
 %TESTSUITE 
+global methodChoice
 
 dataO=[];
 SNRres=[];
 SNRmres=[];
 k=1;
 
-for i=[0.35 0.85];% 0.75 0.7 0.65 0.6 0.55 0.5];
+methodChoice=2;
+
+for i=[0.6 0.85];% 0.75 0.7 0.65 0.6 0.55 0.5];
     i
     disp(['Iteration ' int2str(k) ', for clipping ratio ' num2str(i)]);
-    [dataOrig, reconstruction, dummy1, dummy2, SNR, SNRm]=Simulation(i,1,1,250000);
+    [dataOrig, reconstruction, dummy1, dummy2, SNR, SNRm,SNROrig]=Simulation(i,1,1,220000);
+    SNROrig
+    SNR
+    SNRm
     pause
     sound(dataOrig,44100)
     pause
