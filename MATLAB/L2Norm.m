@@ -1,9 +1,9 @@
-function[f]=L2Norm(x) 
+function[c,ceq]=L2Norm(x) 
 %L2NORM Takes the L2 norm of the given vector
-global B
-global yU
+global A
+global samples
 
-tol=0.1;
+tol=0.01;
 [a b]=size(x);
 if((a~=1)&&(b~=1))
     disp('Input is not a vector')
@@ -13,6 +13,8 @@ if(a==1)
     x=x';
 end
 
-f=norm(yU-B*x);
+c=norm(A*x-samples)-tol;
+ceq=[]; 
+
 end
 

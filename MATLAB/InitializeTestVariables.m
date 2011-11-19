@@ -1,6 +1,6 @@
 function [data,largeData,mediumData,smallData,tinyData,fs,noBits] = InitializeTestVariables(offSet)
 %INITIALIZETESTVARIABLES 
-
+% Author: Naim Mansour
 [data,fs,noBits]=wavread('bach_partita.wav');
 
 data=data(:,1);

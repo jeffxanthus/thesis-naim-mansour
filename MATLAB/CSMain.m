@@ -21,8 +21,28 @@ if rs<cs
 end
 [rs cs]=size(signal);
 fs=44000; %Artificial - testing purposes
-%Parameter selection
-frameLength=20; %in milliseconds
+
+%%NEW APPROACH - ADAPTIVE FRAMELENGTH - CODE BULKY SO FAR, to be altered
+%%later
+clipped1=length(find(signal == max(signal)));
+clipped2=length(find(signal == min(signal)));
+
+maxAmountOfFrames=0;
+if ~(clipped1==1 && clipped2==1)
+    maxAmountOfFrames=floor((rs-(clipped1+clipped2))/(2*estimateSparsity(signal)-1).^2)
+end
+
+
+%%TODO: choose frame length according to constraint, but also to
+%%numerical (UPPER)/psychoaccoustic (LOWER) constraints  --explain in text
+
+%Parameter selection - to be discretised later, fs only necessary for
+%playback and PEAQ
+frameLength=floor(((rs/maxAmountOfFrames)/fs)*1000)
+%Computational bound
+frameLength=min(frameLength,60)
+
+% frameLength=30; %in milliseconds
 if mod(fs*frameLength,1000)~=0
     disp('Infeasible sampling frequency, using default')
     fs=44.1*10^3;
@@ -53,8 +73,8 @@ MinS=min(signal);
 
 for t=1:rs %border values possibly added to the clipped values -OK NOW
     if (signal(t,1)>=MaxS || signal(t,1)<=MinS)...
-        && (((t==1 && signal(t+1,1)-signal(t,1)==0)  || (t==cs && signal(t,1)-signal(t-1,1)==0))... 
-        || ((t~=1 && t~=cs) && signal(t-1,1)-signal(t+1,1))==0)
+        && (((t==1 && signal(t+1,1)-signal(t,1)==0)  || (t==rs && signal(t,1)-signal(t-1,1)==0))... 
+        || ((t~=1 && t~=rs) && signal(t-1,1)-signal(t+1,1))==0)
         Miss=[Miss t];
     end
 end

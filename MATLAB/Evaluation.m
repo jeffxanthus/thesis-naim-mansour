@@ -1,6 +1,7 @@
 function [SNR] = Evaluation(signal, reconstruction, fs, noBits)
 %EVALUATION 
 % SNR evaluation of the reconstruction.
+% Author: Naim Mansour
 addpath('PEAQ');
 
 if nargin<4

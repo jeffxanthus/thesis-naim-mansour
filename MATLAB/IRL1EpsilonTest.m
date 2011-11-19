@@ -1,8 +1,12 @@
 function [SNRs SNRms] = IRL1EpsilonTest(clip,size,method)
 %IRL1-EPSILONTEST 
+% Author: Naim Mansour
 global fFf
+global methodChoice
 
-epsilons=[0.8 0.9] %1 1.1 1.2 1.3];
+methodChoice=1;
+
+epsilons=[0.9 0.95] %1 1.1 1.2 1.3];
 
 SNRs=zeros(length(epsilons),3);
 SNRms=zeros(length(epsilons),3);
@@ -19,7 +23,16 @@ for i=1:length(epsilons)
     end
 end
 
-subplot(2,1,1);plot(SNRs(:,1),'r',SNRs(:,2),'b',SNRs(:,3),'g')
-subplot(2,1,2);plot(SNRms(:,1),'r',SNRms(:,2),'b',SNRms(:,3),'g')
+subplot(2,1,1);
+hold on;
+plot(SNRs(:,1),'r')
+plot(SNRs(:,2),'b')
+plot(SNRs(:,3),'g')
+hold off;
+subplot(2,1,2);
+plot(SNRms(:,1),'r')
+hold on;
+plot(SNRms(:,2),'b')
+plot(SNRms(:,3),'g')
 end
 

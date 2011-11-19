@@ -20,9 +20,28 @@ if rs<cs
     signal=signal';
 end
 [rs cs]=size(signal);
+fs=44000; %Artificial - testing purposes
 
-%Parameter selection
-frameLength=20; %in milliseconds
+%%NEW APPROACH - ADAPTIVE FRAMELENGTH - CODE BULKY SO FAR, to be altered
+%%later
+clipped1=length(find(signal == max(signal)));
+clipped2=length(find(signal == min(signal)));
+
+maxFrameLength=0;
+if ~(clipped1==1 && clipped2==1)
+    maxFrameLength=floor((rs-(clipped1+clipped2))/(2*estimateSparsity(signal)-1).^2)
+end
+rs
+while mod(rs/maxFrameLength,1)~=0
+    maxFrameLength=maxFrameLength-1;
+end
+%%
+
+
+%Parameter selection - to be discretised later, fs only necessary for
+%playback and PEAQ
+frameLength=floor(rs/fs)
+frameLength=30; %in milliseconds
 if mod(fs*frameLength,1000)~=0
     disp('Infeasible sampling frequency, using default')
     fs=44.1*10^3;
@@ -48,8 +67,13 @@ signal(end-(mod(rs,numberOfSamples)-2):end,:)=[];
 
 %Used to be able to calculate SNRm
 Miss=[];
-for t=1:rs %border values possibly added to the clipped values
-    if (signal(1,t)>=max(data) || signal(1,t)<=min(data)) && ((t==1 || t==rs) || (data(1,t-1)-data(1,t+1))==0)
+MaxS=max(signal);
+MinS=min(signal);
+
+for t=1:rs %border values possibly added to the clipped values -OK NOW
+    if (signal(t,1)>=MaxS || signal(t,1)<=MinS)...
+        && (((t==1 && signal(t+1,1)-signal(t,1)==0)  || (t==rs && signal(t,1)-signal(t-1,1)==0))... 
+        || ((t~=1 && t~=rs) && signal(t-1,1)-signal(t+1,1))==0)
         Miss=[Miss t];
     end
 end
@@ -109,7 +133,7 @@ for k=2:cst
     position=position+shiftAmount-1;
 end
 toc;
-%TODO: Result has 1 sample less... (perfect reconstruction)
+
 result=result';
 
 missingSamples=[];

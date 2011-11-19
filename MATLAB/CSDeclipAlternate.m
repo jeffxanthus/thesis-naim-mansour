@@ -1,6 +1,7 @@
 function [r,A] = CSDeclip(data)
 %CSDECLIP - data is already clipped signal
-%Naim Mansour
+% Author: Naim Mansour
+global methodChoice
 
 [rs cs]=size(data);
 if(rs~=1)
@@ -44,7 +45,7 @@ end
 
 %Remove all rows (NO, COLUMNS!!! -- in case of rows, do pinv(B)*B) in 
 %the unit base, according to the error matrix
-B=1.5*eye(N,N);
+B=eye(N,N);
 I=eye(N);
 B(:,X)=0;
 
@@ -61,9 +62,9 @@ switch methodChoice
     case 1
         Delta_x=SolveOMP(A,samples,N,50); %--FAST FAVORITE SO FAR
     case 2
-        Delta_x=OMPDeclip(A,samples,N,MclA,50); %--FAST FAVORITE SO FAR
+        Delta_x=OMPDeclip(A,samples,N,MclA,50); %--FAST FAVORITE SO FAR - NOT USABLE YET
     case 3 
-        Delta_x=SolveBP(A,samples,N,50,0,1e-4); %Investigate parameter impact
+        Delta_x=SolveBP(A,samples,N,50,0.01,1e-3); %Investigate parameter impact
     case 4
         Delta_x=IRL1(A,samples,N,50,0.01,1e-3); %Development in progress
     case 5
