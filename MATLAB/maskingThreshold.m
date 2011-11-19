@@ -1,6 +1,7 @@
 function [ threshold ] = maskingThreshold( input )
 %calculates masking threshold of input audio signal
 %   Steven De Hertogh
+% hoi
 
 
 % Reading inputsignal
