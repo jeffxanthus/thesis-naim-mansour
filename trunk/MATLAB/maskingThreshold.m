@@ -418,8 +418,7 @@ hold off;
 
 
 %Global masking thresholds
-size(Ttm)
-size(Tnm)
+
 Tg = [];
 for i = 1:N/2
     SumTtm = 0;
@@ -432,6 +431,8 @@ for i = 1:N/2
     end
     Tg(i) = 10*log10(10^(0.1*Tq(i))+SumTtm+SumTnm);
 end
+
+threshold = Tg;
 
 figure();
 hold on
