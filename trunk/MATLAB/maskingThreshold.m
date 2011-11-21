@@ -470,11 +470,8 @@ else
         semilogx(tq);
         hold off
     end
-    figure()
-    hold on
-    plot(Tg);
-    semilogx(tq);
-    hold off
+    figure();
+    plot(Tg(10:length(Tg)));
 end
 end
 

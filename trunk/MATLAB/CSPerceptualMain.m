@@ -153,6 +153,9 @@ for u=Miss
     end
 end
 
+maskingThreshold(result);
+
+figure();
 subplot(3,1,1);plot(signal);
 title('Clipped signal')
 subplot(3,1,2);plot(result);
