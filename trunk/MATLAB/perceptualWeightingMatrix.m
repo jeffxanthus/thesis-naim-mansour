@@ -7,7 +7,7 @@ K = length(maskingThreshold);
 H = zeros(K,K);
 A = 1./maskingThreshold;
 
-%plot(A);
+plot(A);
 
 %Generate the filter coefficients
 h = [];
