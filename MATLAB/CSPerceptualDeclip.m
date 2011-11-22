@@ -2,9 +2,9 @@ function [x,r] = CSPerceptualDeclip(data, maskingThreshold)
 %CSDECLIP - data is already clipped signal
 %Naim Mansour
 global methodChoice
-global A
-global samples
-
+%global A
+%global samples
+global regularization
 addpath('ISD_v1.1')
 
 [rs cs]=size(data);
@@ -63,6 +63,10 @@ offSet=max(abs(samples))*eps;
 %samples available - YES already solved (introducing don't care zeros)
 %....
 
+if regularization==[]
+    regularization=0.01;
+end
+
 %Solve the constrained L1 optimization (with lambda regularization)
 methodChoice = 1;
 switch methodChoice
@@ -71,7 +75,7 @@ switch methodChoice
     case 2
         x=OMPDeclip(A,samples,N,MclA,50); %--FAST FAVORITE SO FAR
     case 3 
-        x=SolveBP(A,samples,N,50,0.05,1e-5); %Investigate parameter impact
+        x=SolveBP(A,samples,N,50,regularization,1e-4); %Investigate parameter impact
 %         options = optimset('Algorithm','interior-point','Display','on');
 %         [x, fval]=fmincon(@L1Norm,offSet*ones(N,1),MclA,offSet*ones(length(MclA),1),[],[],[],[],@L2Norm,options);
     case 4
