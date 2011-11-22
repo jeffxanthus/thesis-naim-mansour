@@ -22,7 +22,7 @@ else
     in = input';
 
     %FFT length
-    N = 512;
+    N = 8192;
     nbits = 16;
 
     % Normalization
@@ -37,6 +37,11 @@ else
         subplot(3,1,1);plot(in(:,1));
         %subplot(3,1,2);plot(in(:,2));
         subplot(3,1,3);plot(sig);
+    end
+    
+    size(in)
+    if length(in) < N
+        in = [in; zeros(N-length(in),1)];
     end
 
     % PSD
@@ -60,17 +65,17 @@ else
     % Tonal set
     St=zeros(1,N/2);
 
-    for k = 3:62 %(0,17-5,5 kHz)
+    for k = 3:992 %(0,17-5,5 kHz)
         if (P(k) > P(k+1)) && (P(k) > P(k-1)) && (P(k) > (P(k+2)+7)) && (P(k) > (P(k-2)+7))
              St(k) = P(k);
         end
     end
-    for k = 63:126 %(5,5-11 kHz)
+    for k = 993:2016 %(5,5-11 kHz)
         if (P(k) > P(k+1)) && (P(k) > P(k-1)) && (P(k) > (P(k+2)+7)) && (P(k) > (P(k-2)+7)) && (P(k) > (P(k+3)+7)) && (P(k) > (P(k-3)+7))
              St(k) = P(k);
         end
     end
-    for k = 127:250 %(11-20 kHz) 
+    for k = 2017:4090 %(11-20 kHz) 
         if (P(k) > P(k+1)) && (P(k) > P(k-1)) && (P(k) > (P(k+2)+7)) && (P(k) > (P(k-2)+7)) && (P(k) > (P(k+6)+7)) && (P(k) > (P(k-6)+7))
              St(k) = P(k);
         end
@@ -80,7 +85,7 @@ else
         i = 1;
         a= [];
         b= [];
-        for k = 1:256
+        for k = 1:N/2
            if St(k) ~= 0
                a(i) = St(k);
                b(i) = k;
@@ -108,17 +113,17 @@ else
     end
 
     Pn = zeros(1,N/2);
-    for k = 3:62 %(0,17-5,5 kHz)
+    for k = 3:992 %(0,17-5,5 kHz)
         if (P(k) ~= St(k)) && (P(k) ~= St(k+1)) && (P(k) ~= St(k-1)) && (P(k) ~= St(k+2)) && (P(k) ~= St(k-2))
              Pn(k) = P(k);
         end
     end
-    for k = 63:126 %(5,5-11 kHz)
+    for k = 993:2016 %(5,5-11 kHz)
         if (P(k) ~= St(k)) && (P(k) ~= St(k+1)) && (P(k) ~= St(k-1)) && (P(k) ~= (St(k+2)+7)) && (P(k) ~= St(k-2)) && (P(k) ~= St(k+3)) && (P(k) ~= St(k-3))
              Pn(k) = P(k);
         end
     end
-    for k = 127:250 %(11-20 kHz) 
+    for k = 2017:4090 %(11-20 kHz) 
         if (P(k) ~= St(k)) && (P(k) ~= St(k+1)) && (P(k) ~= St(k-1)) && (P(k) ~= (St(k+2)+7)) && (P(k) ~= St(k-2)) && (P(k) ~= St(k+6)) && (P(k) ~= St(k-6))
              Pn(k) = P(k);
         end
@@ -129,16 +134,16 @@ else
     k = 1;
     while k < N/2
         kstart = k;
-        while ((ceil(FreqToBark(k*86)) == i) && (k < (N/2)))
+        while ((ceil(FreqToBark(k*5)) == i) && (k < (N/2)))
             k = k+1;
         end
         kstop = k;
         i = i+1;
         kstreep = 1;
         for z = kstart:kstop
-           kstreep = kstreep * z;
+           kstreep = kstreep * z^(1/(kstop-kstart+1));
         end
-        kstreep = kstreep^(1/(kstop-kstart+1));
+        %kstreep = kstreep^(1/(kstop-kstart+1));
         kstreep = floor(kstreep);
         w = 0;
         nottonal = 1;
@@ -159,7 +164,7 @@ else
         b= [];
         c= [];
         d= [];
-        for k = 1:256
+        for k = 1:N/2
            if Ptm(k) ~= 0
                a(i) = Ptm(k);
                b(i) = k;
@@ -189,7 +194,7 @@ else
         Tq(f) = 3.64*(f/1000)^(-0.8) - 65*exp(-0.6*(f/1000-3.3)^2) + 10^(-3) * (f/1000)^4;
     end
 
-    tq=(downsample(Tq, 86));
+    tq=(downsample(Tq, 5));
 
     if (showplots ==1)
         figure();
@@ -219,7 +224,7 @@ else
         b= [];
         c= [];
         d= [];
-        for k = 1:256
+        for k = 1:N/2
            if Ptm(k) ~= 0
                a(i) = Ptm(k);
                b(i) = k;
@@ -249,7 +254,7 @@ else
     for k = 1:N/2
        if Ptm(k)>0
            ks(i)=k;
-           b(i) =  FreqToBark(k*86);
+           b(i) =  FreqToBark(k*5);
            i = i+1;
        end    
     end
@@ -278,7 +283,7 @@ else
     for k = 1:N/2
        if Pnm(k)>0
            ks(i)=k;
-           b(i) =  FreqToBark(k*86);
+           b(i) =  FreqToBark(k*5);
            i = i+1;
        end    
     end
@@ -310,7 +315,7 @@ else
         b= [];
         c= [];
         d= [];
-        for k = 1:256
+        for k = 1:N/2
            if Ptm(k) ~= 0
                a(i) = Ptm(k);
                b(i) = k;
@@ -336,17 +341,17 @@ else
     Ptm2 = zeros(1,length(Ptm));
     Pnm2 = zeros(1,length(Pnm));
     for k = 1:length(Ptm)
-        if  (k >= 1) && (k <= 48)
+        if  (k >= 1) && (k <= 768)
             i = k;
             Ptm2(i) = Ptm(k);
             Pnm2(i) = Pnm(k);
-        elseif (k >= 49) && (k <= 96)
+        elseif (k >= 769) && (k <= 1536)
             i = k+mod(k,2);
             Ptm2(i) = Ptm(k);
             Ptm(k) = 0;
             Pnm2(i) = Pnm(k);
             Pnm(k) = 0;
-        elseif (k >= 97) && (k <= 232)
+        elseif (k >= 1537) && (k <= 3712)
             i = k + 3 - mod((k-1),4);
             Ptm2(i) = Ptm(k);
             Ptm(k) = 0;
@@ -362,7 +367,7 @@ else
     b= [];
     c= [];
     d= [];
-    for k = 1:256
+    for k = 1:N/2
        if Ptm2(k) ~= 0
            a(i) = Ptm2(k);
            b(i) = k;
@@ -392,7 +397,7 @@ else
     Tnm = [];
     for i = 1:N/2
         for n = 1:N/2
-            delt = FreqToBark(i*86) - FreqToBark(n*86);
+            delt = FreqToBark(i*5) - FreqToBark(n*5);
             if (delt >= -3) && (delt < -1)
                 SF(i,n) = 17*delt - 0.4*Ptm2(n) + 11;
                 SFn(i,n) = 17*delt - 0.4*Pnm2(n) + 11;
