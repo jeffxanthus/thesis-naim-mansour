@@ -4,7 +4,7 @@ function [result,missingSamples] = CSMain(signal, method, fs)
 %   fs:     Sample rate in Hz. If not specified, 44.1kHz is chosen.
 %   method: Type 1 for classical y=Ax constraints, 2 for y=Ax+Beconstraints
 %Naim Mansour
-
+% addpath('../')
 %If no sample frequency specified
 tic;
 if nargin<3
@@ -28,8 +28,9 @@ clipped1=length(find(signal == max(signal)));
 clipped2=length(find(signal == min(signal)));
 
 maxAmountOfFrames=0;
+
 if ~(clipped1==1 && clipped2==1)
-    maxAmountOfFrames=floor((rs-(clipped1+clipped2))/(2*estimateSparsity(signal)-1).^2)
+    maxAmountOfFrames=floor((rs-(clipped1+clipped2))/(2*estimateSparsity(signal)-1).^2);
 end
 
 
@@ -38,10 +39,10 @@ end
 
 %Parameter selection - to be discretised later, fs only necessary for
 %playback and PEAQ
-frameLength=floor(((rs/maxAmountOfFrames)/fs)*1000)
+frameLength=floor(((rs/maxAmountOfFrames)/fs)*1000);
 %Computational bound
-frameLength=min(frameLength,60)
-
+% frameLength=min(frameLength,60); %Problems with divisibility
+frameLength=64;
 % frameLength=30; %in milliseconds
 if mod(fs*frameLength,1000)~=0
     disp('Infeasible sampling frequency, using default')
@@ -117,7 +118,8 @@ if(method==1)
     else
         nonMultipleRec=CSDeclipAlternate(nonMultiplePart);
 end
-    
+% U=T;
+% nonMultipleRec=nonMultiplePart; 
 disp('Reconstructing...')
 %Reconstruction (should work for any overlap ratio and compatible window)
 window=hann(numberOfSamples+1); %Hann window (with 50% overlap)
