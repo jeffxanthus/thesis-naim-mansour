@@ -4,7 +4,7 @@ function [result,missingSamples] = CSMain(signal, method, fs)
 %   fs:     Sample rate in Hz. If not specified, 44.1kHz is chosen.
 %   method: Type 1 for classical y=Ax constraints, 2 for y=Ax+Beconstraints
 %Naim Mansour
-
+% addpath('../')
 %If no sample frequency specified
 tic;
 if nargin<3
@@ -28,8 +28,9 @@ clipped1=length(find(signal == max(signal)));
 clipped2=length(find(signal == min(signal)));
 
 maxAmountOfFrames=0;
+
 if ~(clipped1==1 && clipped2==1)
-    maxAmountOfFrames=floor((rs-(clipped1+clipped2))/(2*estimateSparsity(signal)-1).^2)
+    maxAmountOfFrames=floor((rs-(clipped1+clipped2))/(2*estimateSparsity(signal)-1).^2);
 end
 
 
@@ -38,17 +39,17 @@ end
 
 %Parameter selection - to be discretised later, fs only necessary for
 %playback and PEAQ
-frameLength=floor(((rs/maxAmountOfFrames)/fs)*1000)
+frameLength=floor(((rs/maxAmountOfFrames)/fs)*1000);
 %Computational bound
-frameLength=min(frameLength,60)
-
+% frameLength=min(frameLength,60); %Problems with divisibility
+frameLength=60;
 % frameLength=30; %in milliseconds
 if mod(fs*frameLength,1000)~=0
     disp('Infeasible sampling frequency, using default')
     fs=44.1*10^3;
 end
 frameOverlap=50; %percentage -- FOR NOW, USE ONLY 50%, OTHERWISE BARTLETT DOESN'T WORK
-numberOfSamples=fs*frameLength/1000 %also minimal signal length
+numberOfSamples=fs*frameLength/1000; %also minimal signal length
 
 %Rough approach, to be changed later
 if rs<numberOfSamples
@@ -98,6 +99,7 @@ end
 U=[];
 [rst cst]=size(T);
 % Could be combined with previous for-loop
+
 % Apply the declipping to each frame
 disp('Declipping...')
 for j=1:cst
@@ -110,7 +112,14 @@ for j=1:cst
     subplot(2,1,1);plot(U(:,j),'-');
     subplot(2,1,2);plot(T(:,j),'-');
 end
-U=T;
+%Non-multiple part
+if(method==1)
+        [dummy nonMultipleRec]=CSDeclip(nonMultiplePart);
+    else
+        nonMultipleRec=CSDeclipAlternate(nonMultiplePart);
+end
+% U=T;
+% nonMultipleRec=nonMultiplePart; 
 disp('Reconstructing...')
 %Reconstruction (should work for any overlap ratio and compatible window)
 window=hann(numberOfSamples+1); %Hann window (with 50% overlap)
@@ -136,14 +145,14 @@ for k=2:cst
     result=[unalteredPart summedPart unalteredBlockPart];
     position=position+shiftAmount-1;
 end
-toc;
 
-result=result';
+result=[result nonMultipleRec'];
+toc;
 
 missingSamples=[];
 for u=Miss
     try
-        missingSamples=[missingSamples result(u,1)];
+        missingSamples=[missingSamples result(1,u)];
     catch ME
         disp('Missing sample skipped');
     end
