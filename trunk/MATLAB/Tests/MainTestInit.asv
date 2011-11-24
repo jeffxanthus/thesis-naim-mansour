@@ -1,0 +1,12 @@
+function [RM1 SNRM1 RM2 SNRM2 RM3 SNRM3 RM4 SNRM4] = MainTestInit()
+%MAINTESTINIT
+
+
+[RM1 SNRM1 SNRORIG1]=AxBeTest(3,'BachHymn.wav');
+[RM2 SNRM2]=AxBeTest(3,'BeethoP5.wav');
+[RM3 SNRM3]=AxBeTest(3,'Forsake2.wav');
+[RM4 SNRM4]=AxBeTest(3,'Secret_2.wav');
+
+end
+
+

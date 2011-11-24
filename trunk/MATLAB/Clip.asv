@@ -2,48 +2,71 @@ function [output] = Clip(input,threshold,clippedAmount)
 %CLIP - Naim Mansour
 %threshold el. of [0,1]
 %Naim Mansour
-limit=threshold*max(input);
+
+%Avoid outliers messing up the clipping (misleading results)
+%MAX case
+[sortedSig indicesSig]=sort(input,'descend');
+
+newMax=max(input);
+t=1;
+%Could be more detailed: later
+while (sortedSig(1,t)>mean(sortedSig)+2*std(sortedSig))
+    t=t+1;
+end
+newMin=sortedSig(1,end);
+t=1;
+while (abs(sortedSig(1,end-(t-1)))-abs(sortedSig(1,end-t)))>factor*(abs(sortedSig(1,end-t))-abs(sortedSig(1,end-(t+1))))
+    newMin=sortedSig(1,t+1);
+    t=t+1;
+end
+
+% limit=threshold*max(input);
+upperLimit=threshold*newMax;
+lowerLimit=threshold*newMin;
 [rs cs]=size(input);
 x=input;
-    
+
 if nargin == 2 
     if(rs>1)
         input=input';
     end
     for i=1:length(input)
-        if(input(1,i)>limit)
-            input(1,i)=limit;
+        if(input(1,i)>upperLimit)
+            input(1,i)=upperLimit;
         end
-         if(input(1,i)<-limit)
-            input(1,i)=-limit;
+         if(input(1,i)<lowerLimit)
+            input(1,i)=lowerLimit;
         end
     end
 end
 
 if nargin > 2
-    for i=1:clippedAmount
-        if mod(clippedAmount,2)~=0
-            clippedAmount=clippedAmount+1;
-        end
-        [inputSorted indices]=sort(input,'descend'); %dubious, only for test purposes
-        indices=indices';
-        inputSorted=inputSorted';
-        %Upper bound
-        toReplace=indices(1:clippedAmount/2,1)';
-        for t=toReplace
-            
-        input(toReplace,:)=inputSorted(clippedAmount/2,1); 
-        %Lower bound
-        toReplace2=indices(clippedAmount/2+1:end,1)';
-        input(toReplace2,:)=inputSorted(end-(clippedAmount/2)+1,:); 
-        
-        pause
-        plot(input) 
+    if mod(clippedAmount,2)~=0
+        clippedAmount=clippedAmount+1;
+    end
+    [rs cs]=size(input);
+    if rs==1
+        input=input';
+    end
+    [inputSorted indices]=sort(input,'descend'); %dubious, only for test purposes
+    size(input)
+    size(inputSorted)
+    %Upper bound
+    toReplace=indices(1:clippedAmount/2,1)';
+    for t=toReplace
+        input(t,1)=inputSorted(clippedAmount/2,1); 
+    end
+    %Lower bound
+    toReplace2=indices(end-(clippedAmount/2)+1:end,1)';
+    for v=toReplace2
+        input(v,1)=inputSorted(end-(clippedAmount/2)+1,1); 
     end
 end
 output=input;
 
-subplot(2,1,1);plot(x);
-subplot(2,1,2);plot(output);
+subplot(2,1,1);plot(x,'.');
+axis([0 length(x) min(x)-1 max(x)+1])
+subplot(2,1,2);plot(output,'.');
+axis([0 length(x) min(x)-1 max(x)+1])
 end
 
