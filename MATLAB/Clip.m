@@ -2,20 +2,44 @@ function [output] = Clip(input,threshold,clippedAmount)
 %CLIP - Naim Mansour
 %threshold el. of [0,1]
 %Naim Mansour
-limit=threshold*max(input);
+
+%Avoid outliers messing up the clipping (misleading results)
+%MAX case
+newMax=max(input);
+newMin=min(input);
+
+% [sortedSig indicesSig]=sort(input,'descend');
+% meanSig=mean(sortedSig);
+% stdSig=std(sortedSig)
+% t=1;
+% %Could be more detailed: later
+% while (sortedSig(1,t)>meanSig+3*stdSig)
+%     t=t+1;
+% end
+% newMax=sortedSig(1,t);
+% 
+% t=length(sortedSig);
+% while (abs(sortedSig(1,t))>meanSig+3*stdSig)
+%     t=t-1;
+% end
+% newMin=sortedSig(1,t);
+
+% limit=threshold*max(input);
+upperLimit=threshold*newMax;
+lowerLimit=threshold*newMin;
 [rs cs]=size(input);
 x=input;
-    
+
 if nargin == 2 
     if(rs>1)
         input=input';
     end
     for i=1:length(input)
-        if(input(1,i)>limit)
-            input(1,i)=limit;
+        if(input(1,i)>upperLimit)
+            input(1,i)=upperLimit;
         end
-         if(input(1,i)<-limit)
-            input(1,i)=-limit;
+         if(input(1,i)<lowerLimit)
+            input(1,i)=lowerLimit;
         end
     end
 end

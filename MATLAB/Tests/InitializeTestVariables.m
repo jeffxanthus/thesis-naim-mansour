@@ -27,8 +27,8 @@ data=data(1,20000:end);
 size(data)
 %Temporary solution, only testing purposes
 largeData=[]; %data(1,offSet+10001:offSet+2000000); %1990000 samples
-mediumData=[]; %data(1,offSet+100001:offSet+250000); %240000 samples
+mediumData=data(1,offSet+10001:offSet+25000); %24000 samples
 smallData=data(1,offSet+20001:offSet+30000); %10000 samples
-tinyData=data(1,offSet+10001:offSet+14000);  %4000 samples
+tinyData=data(1,offSet+10001:offSet+13000);  %3000 samples
 end
 

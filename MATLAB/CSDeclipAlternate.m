@@ -47,7 +47,7 @@ end
 %the unit base, according to the error matrix
 B=eye(N,N);
 I=eye(N);
-B(:,X)=0;
+B(:,X)=[];
 
 Re=I-B*pinv(B);
 
@@ -64,9 +64,9 @@ switch methodChoice
     case 2
         Delta_x=OMPDeclip(A,samples,N,MclA,50); %--FAST FAVORITE SO FAR - NOT USABLE YET
     case 3 
-        Delta_x=SolveBP(A,samples,N,50,0.01,1e-3); %Investigate parameter impact
+        Delta_x=SolveBP(A,samples,N,30,0.0075,1e-4); %Investigate parameter impact
     case 4
-        Delta_x=IRL1(A,samples,N,50,0.01,1e-3); %Development in progress
+        Delta_x=IRL1(A,samples,N,50,0.01,1e-4); %Development in progress
     case 5
         Delta_x=SolveLasso(A,samples,N); %--VERY SLOW, NOT THAT ACCURATE
 end
