@@ -128,7 +128,7 @@ while position+(numberOfSamples)<=rs
     summedPart=result(1,position:end)+currentBlock(1,1:shiftAmount);
     unalteredBlockPart=currentBlock(1,shiftAmount+1:end);
     result=[unalteredPart summedPart unalteredBlockPart];
-    masking = maskingThreshold(result);
+    masking = meanMaskingThreshold(result);
     position=position+shiftAmount-1;
     i=i+1;
 end

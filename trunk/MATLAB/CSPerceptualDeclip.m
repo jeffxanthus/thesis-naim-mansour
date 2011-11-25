@@ -50,6 +50,10 @@ if length(A)==0
     return;
 end
 
+%Calculate filtermatrix
+threshold = resample(maskingThreshold, length(A), length(maskingThreshold));
+W = perceptualWeightingMatrix(threshold);
+%A = W.*A;
 
 Mpos=zeros(N,1);
 Mpos(Mp,:)=1;
