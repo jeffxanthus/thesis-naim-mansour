@@ -51,9 +51,11 @@ if length(A)==0
 end
 
 %Calculate filtermatrix
+figure()
+plot(maskingThreshold)
 threshold = resample(maskingThreshold, length(A), length(maskingThreshold));
 W = perceptualWeightingMatrix(threshold);
-%A = W.*A;
+A = W.*A;
 
 Mpos=zeros(N,1);
 Mpos(Mp,:)=1;
@@ -67,7 +69,7 @@ offSet=max(abs(samples))*eps;
 %samples available - YES already solved (introducing don't care zeros)
 %....
 
-if regularization==[]
+if regularization == []
     regularization=0.01;
 end
 
