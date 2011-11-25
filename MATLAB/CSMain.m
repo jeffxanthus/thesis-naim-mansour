@@ -79,6 +79,7 @@ end
 %Keep only the part of the signal divisible into subframes, the other part
 %will be processed separately (temp, maybe better approach later)
 nonMultiplePart=signal(end-(mod(rs,numberOfSamples)-2):end,:);
+origSignal=signal;
 signal(end-(mod(rs,numberOfSamples)-2):end,:)=[];
 [rs cs]=size(signal);
 
@@ -118,8 +119,8 @@ if(method==1)
     else
         nonMultipleRec=CSDeclipAlternate(nonMultiplePart);
 end
-% U=T;
-% nonMultipleRec=nonMultiplePart; 
+%   U=T;
+%   nonMultipleRec=nonMultiplePart; 
 disp('Reconstructing...')
 %Reconstruction (should work for any overlap ratio and compatible window)
 window=hann(numberOfSamples+1); %Hann window (with 50% overlap)
@@ -158,7 +159,7 @@ for u=Miss
     end
 end
 
-subplot(3,1,1);plot(signal);
+subplot(3,1,1);plot(origSignal);
 title('Clipped signal')
 subplot(3,1,2);plot(result);
 title('Reconstructed signal')

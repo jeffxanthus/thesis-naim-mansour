@@ -68,7 +68,7 @@ if regularization==[]
 end
 
 %Solve the constrained L1 optimization (with lambda regularization)
-methodChoice = 1;
+methodChoice = 3;
 switch methodChoice
     case 1
         x=SolveOMP(A,samples,N,50); %--FAST FAVORITE SO FAR
@@ -79,7 +79,7 @@ switch methodChoice
 %         options = optimset('Algorithm','interior-point','Display','on');
 %         [x, fval]=fmincon(@L1Norm,offSet*ones(N,1),MclA,offSet*ones(length(MclA),1),[],[],[],[],@L2Norm,options);
     case 4
-        x=IRL1(A,samples,N,50,0,1e-3); %Development in progress
+        x=IRL1(A,samples,N,50,0.007,1e-3); %Development in progress
 %           x=Threshold_ISD_1D(A,samples);
     case 5
         x=SolveLasso(A,samples,N); %--VERY SLOW, NOT THAT ACCURATE
