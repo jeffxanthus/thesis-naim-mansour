@@ -38,7 +38,7 @@ else
         %subplot(3,1,2);plot(in(:,2));
         subplot(3,1,3);plot(sig);
     end
-
+    
     % PSD
     P=[];
     z=zeros(1,N/2);
@@ -470,8 +470,8 @@ else
         semilogx(tq);
         hold off
     end
-    figure();
-    plot(Tg(10:length(Tg)));
+   % figure(1);
+    %plot(Tg(10:length(Tg)));
 end
 end
 
