@@ -79,6 +79,7 @@ end
 %Keep only the part of the signal divisible into subframes, the other part
 %will be processed separately (temp, maybe better approach later)
 nonMultiplePart=signal(end-(mod(rs,numberOfSamples)-2):end,:);
+origSig = signal;
 signal(end-(mod(rs,numberOfSamples)-2):end,:)=[];
 [rs cs]=size(signal);
 
@@ -156,7 +157,7 @@ end
 maskingThreshold(result);
 
 figure();
-subplot(3,1,1);plot(signal);
+subplot(3,1,1);plot(origSig);
 title('Clipped signal')
 subplot(3,1,2);plot(result);
 title('Reconstructed signal')
