@@ -41,8 +41,8 @@ end
 %playback and PEAQ
 frameLength=floor(((rs/maxAmountOfFrames)/fs)*1000)
 %Computational bound
-frameLength=min(frameLength,60)
-
+%frameLength=min(frameLength,60)
+frameLength = 64;
 % frameLength=30; %in milliseconds
 if mod(fs*frameLength,1000)~=0
     disp('Infeasible sampling frequency, using default')
@@ -87,19 +87,26 @@ signal(end-(mod(rs,numberOfSamples)-2):end,:)=[];
 %Division into frames
 disp('Dividing into frames...')
 T=[];
-U=[];
 
+T(:,1)=signal(1:numberOfSamples+1,1);
 position=(1-(frameOverlap/100))*numberOfSamples+1;
+i=2;
+while position+(numberOfSamples)<=rs
+    T(:,i)=signal(position:position+numberOfSamples,1);
+    position=position+(1-(frameOverlap/100))*numberOfSamples;
+    i=i+1;
+end
+
+
+U=[];
+[rst cst]=size(T);
+
 window=hann(numberOfSamples+1); %Hann window (with 50% overlap)
-shiftAmount=(1-(frameOverlap/100))*numberOfSamples+1; %=442 in typical case
+shiftAmount=(1-(frameOverlap/100))*numberOfSamples+1;%=442 in typical case
+position = shiftAmount;
 masking = maskingThreshold(1);
 i=1;
-while position+(numberOfSamples)<=rs
-    if i == 1
-        T(:,i)=signal(1:numberOfSamples+1,1);
-    else
-        T(:,i)=signal(position:position+numberOfSamples,1);
-    end
+while i<=cst
     disp(['Now declipping frame ' int2str(i) ])
     if(method==1)
         [dummy U(:,i)]=CSDeclip(T(:,i));
@@ -112,24 +119,25 @@ while position+(numberOfSamples)<=rs
     disp('Reconstructing...')    
     %Condition on first frame
     if i == 1
-        %if cst==1 %If only 1 frame
-        %    result=U';
-        %else
+        if cst==1 %If only 1 frame
+            result=U';
+        else
             result=[U(1:shiftAmount-1,1)' (window(shiftAmount:end,1).*U(shiftAmount:end,1))'];
-       % end
-    end
-    if i==rs
+        end
+    elseif i==cst
         %Condition on last frame
         currentBlock=[(window(1:shiftAmount,1).*U(1:shiftAmount,i))' U(shiftAmount+1:end,i)'];
     else
         currentBlock=(window.*U(:,i))';
     end
-    unalteredPart=result(1,1:position-1);
-    summedPart=result(1,position:end)+currentBlock(1,1:shiftAmount);
-    unalteredBlockPart=currentBlock(1,shiftAmount+1:end);
-    result=[unalteredPart summedPart unalteredBlockPart];
-    masking = meanMaskingThreshold(result);
-    position=position+shiftAmount-1;
+    if (i >1)
+        unalteredPart=result(1,1:position-1);
+        summedPart=result(1,position:end)+currentBlock(1,1:shiftAmount);
+        unalteredBlockPart=currentBlock(1,shiftAmount+1:end);
+        result=[unalteredPart summedPart unalteredBlockPart];
+        masking = meanMaskingThreshold(result);
+        position=position+shiftAmount-1;
+    end
     i=i+1;
 end
 
@@ -138,8 +146,10 @@ end
 %Non-multiple part
 if(method==1)
         [dummy nonMultipleRec]=CSDeclip(nonMultiplePart);
-    else
+elseif(method == 2)
         nonMultipleRec=CSDeclipAlternate(nonMultiplePart);
+elseif(method == 3)
+        [dummy nonMultipleRec]=CSPerceptualDeclip(nonMultiplePart);
 end
 
 result=[result nonMultipleRec'];
@@ -154,7 +164,7 @@ for u=Miss
     end
 end
 
-maskingThreshold(result);
+
 
 figure();
 subplot(3,1,1);plot(origSig);
