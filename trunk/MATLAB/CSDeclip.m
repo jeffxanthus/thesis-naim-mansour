@@ -67,7 +67,7 @@ offSet=max(abs(samples))*eps;
 if regularization==[]
     regularization=0.01;
 end
-
+methodChoice = 3;
 %Solve the constrained L1 optimization (with lambda regularization)
 switch methodChoice
     case 1
