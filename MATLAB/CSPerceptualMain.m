@@ -107,7 +107,7 @@ position = shiftAmount;
 masking = maskingThreshold(1);
 i=1;
 while i<=cst
-    disp(['Now declipping frame ' int2str(i) ])
+    disp(['Now declipping frame ' int2str(i) ' out of ' int2str(cst)])
     if(method==1)
         [dummy U(:,i)]=CSDeclip(T(:,i));
     elseif (method==2)
@@ -149,7 +149,7 @@ if(method==1)
 elseif(method == 2)
         nonMultipleRec=CSDeclipAlternate(nonMultiplePart);
 elseif(method == 3)
-        [dummy nonMultipleRec]=CSPerceptualDeclip(nonMultiplePart);
+        [dummy nonMultipleRec]=CSPerceptualDeclip(nonMultiplePart, masking);
 end
 
 result=[result nonMultipleRec'];
