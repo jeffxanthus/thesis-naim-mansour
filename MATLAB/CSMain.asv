@@ -42,14 +42,14 @@ end
 frameLength=floor(((rs/maxAmountOfFrames)/fs)*1000);
 %Computational bound
 % frameLength=min(frameLength,60); %Problems with divisibility
-frameLength=60;
+frameLength=64;
 % frameLength=30; %in milliseconds
 if mod(fs*frameLength,1000)~=0
     disp('Infeasible sampling frequency, using default')
     fs=44.1*10^3;
 end
 frameOverlap=50; %percentage -- FOR NOW, USE ONLY 50%, OTHERWISE BARTLETT DOESN'T WORK
-numberOfSamples=fs*frameLength/1000; %also minimal signal length
+numberOfSamples=fs*frameLength/1000 %also minimal signal length
 
 %Rough approach, to be changed later
 if rs<numberOfSamples

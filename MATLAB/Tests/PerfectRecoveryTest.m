@@ -10,22 +10,22 @@ regularization=0;
 [freq data]=SparseSignalConstructor(sparsity,length);
 method=1;
 fs=44100;
-minimumSamples=round((6*sparsity-1).^2); %NO NOISE YET -- THEN factor 4
+minimumSamples=2*((2*sparsity-1).^2); %NO NOISE YET -- THEN factor 4
 minimumSamples
 length
 if minimumSamples>length
     disp('No perfect recovery possible')
-    return;
+%     return;
 end
 k=1;
-minimumSamples=length-100;
+% minimumSamples=length-100;
 sound(data,fs)
 for i=minimumSamples:50:minimumSamples+100
     disp(['Iteration ' int2str(k) ', for amount of samples ' int2str(i)]);
     input=Clip(data,1,length-i);
     subplot(2,1,1);plot(data)
     subplot(2,1,2);plot(input)
-    
+    pause
     MaxI=max(input);
     MinI=min(input);
     size(find(input>=MaxI))

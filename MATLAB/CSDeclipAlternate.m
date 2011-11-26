@@ -68,7 +68,9 @@ switch methodChoice
     case 4
         Delta_x=IRL1(A,samples,N,50,0.01,1e-4); %Development in progress
     case 5
-        Delta_x=SolveLasso(A,samples,N); %--VERY SLOW, NOT THAT ACCURATE
+%         Delta_x=SolveLasso(A,samples,N); %--VERY SLOW, NOT THAT ACCURATE
+%         options = struct('Verbose',0); --NOT USABLE BECAUSE OF A matrix
+%         [Delta_x,niter,residuals,outputData,opts]=NESTA(A,[],samples,0.01,1e-4,options);
 end
 
 x=delta*Delta_x;
