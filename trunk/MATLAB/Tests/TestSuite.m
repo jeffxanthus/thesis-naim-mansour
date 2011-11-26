@@ -9,13 +9,13 @@ SNRres=[];
 SNRmres=[];
 k=1;
 
-methodChoice=3;
+methodChoice=1;
 regularization=0;
 
-for i=[0.75 0.85];% 0.75   0.7 0.65 0.6 0.55 0.5];
+for i=[0.9 0.85];% 0.75   0.7 0.65 0.6 0.55 0.5];
     i
     disp(['Iteration ' int2str(k) ', for clipping ratio ' num2str(i)]);
-    [dataOrig, reconstruction, dummy1, dummy2, SNR, SNRm,SNROrig,SNRmorig]=Simulation(i,0,1,100000);
+    [dataOrig, reconstruction, dummy1, dummy2, SNR, SNRm,SNROrig,SNRmorig]=Simulation(i,1,1,200000);
     SNROrig
     SNR
     SNRmorig

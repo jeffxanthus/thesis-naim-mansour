@@ -9,21 +9,26 @@ iterCount=3; %If this is set to 1, unweighted L1 minimization is carried out.
 W=diag(ones(N,1));
 it=0;
 xNew=1*10^5.*ones(N,1);
-eps=1*10^(-1);
+eps=1*10^(-4);
 
 x=zeros(N,1);
-x0=SolveBP(A,y,N,maxIters,lambda,OptTol);
+% x0=SolveBP(A,y,N,maxIters,lambda,OptTol);
+options = struct('Verbose', 0);
+[x0,niter,residuals,outputData,opts]=NESTA(A,[],y,0.02,1e-3,options);
 fFf=0.95;
 epsilon=chooseEpsilons(x0,N,fFf);
 
 %If BP: min lambda*||x||1 + ||Ax-b||2
 %Weighted BP: y=Wx, x=W^(-1)x, min lambda*||y||1 + ||AW^(-1)y-b||2
-while (abs(norm(x,1)-norm(xNew,1))>eps && it<iterCount)
+while (it<iterCount) %norm(x-xNew)>eps &&
     disp(['Iteration count is now ' int2str(it)])
     x=xNew;
-    B=A/W;
-    xNew=SolveBP(B,y,N,maxIters,lambda,OptTol);
-    xNew=W\xNew;
+%     B=A/W;
+%     xNew=SolveBP(B,y,N,maxIters,lambda,OptTol);
+    %GET BACK TO 5dB INCREASE PERFORMANCE!!!
+    options = struct('Verbose', 0, 'U', W,'maxiter',250,'MaxIntIter',3,'xplug',x0);
+    [xNew,niter,residuals,outputData,opts]=NESTA(A,[],y,0.02,1e-3,options);
+%     xNew=W\xNew;
     close all;
 %     subplot(2,1,1);plot(xNew)
 %     subplot(2,1,2);plot(idct(xNew))

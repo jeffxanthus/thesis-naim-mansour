@@ -6,7 +6,7 @@ global methodChoice
 % global samples
 global regularization
 
-addpath('ISD_v1.1')
+addpath('NESTA_v1.1')
 
 [rs cs]=size(data);
 if(rs~=1)
@@ -82,7 +82,9 @@ switch methodChoice
         x=IRL1(A,samples,N,50,0,1e-4); %Development in progress
 %           x=Threshold_ISD_1D(A,samples);
     case 5
-        x=SolveLasso(A,samples,N); %--VERY SLOW, NOT THAT ACCURATE
+%         x=SolveLasso(A,samples,N); %--VERY SLOW, NOT THAT ACCURATE
+          options = struct('Verbose',0);
+          [x,niter,residuals,outputData,opts] =NESTA(A,[],samples,0.01,1e-4,options);
 end
 
 % x=l1qc_logbarrier(pinv(A)*y,A,[],y,1);
