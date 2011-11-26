@@ -42,7 +42,7 @@ end
 frameLength=floor(((rs/maxAmountOfFrames)/fs)*1000);
 %Computational bound
 % frameLength=min(frameLength,60); %Problems with divisibility
-frameLength=20;
+frameLength=64;
 % frameLength=30; %in milliseconds
 if mod(fs*frameLength,1000)~=0
     disp('Infeasible sampling frequency, using default')
@@ -147,7 +147,7 @@ for k=2:cst
     position=position+shiftAmount-1;
 end
 
-result=[result nonMultipleRec'];
+result=[result nonMultipleRec];
 toc;
 
 missingSamples=[];
