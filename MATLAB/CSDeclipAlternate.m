@@ -75,9 +75,10 @@ end
 
 x=delta*Delta_x;
 
-%HOW TO EXTRACT THE NOISE RECONSTRUCTION e?
-%Seems a much worse approach.. ?
-r=idct(x);
+
+r=idct(x)';
+data(1,E)=r(1,E);
+r=data;
 
 subplot(5,1,1);plot(data);
 title('Clipped signal')
