@@ -51,7 +51,6 @@ if length(A)==0
     return;
 end
 
-
 Mpos=zeros(N,1);
 Mpos(Mp,:)=1;
 Mneg=zeros(N,1);
@@ -59,10 +58,6 @@ Mneg(Mn,:)=1;
 MclA=diag(Mneg-Mpos)*B;
 eps=0.9;
 offSet=max(abs(samples))*eps;
-% pause
-%INHERENT PROBLEM, size of A needs to be consistent, not possible with only
-%samples available - YES already solved (introducing don't care zeros)
-%....
 
 if regularization==[]
     regularization=0.01;
@@ -89,7 +84,9 @@ end
 
 % x=l1qc_logbarrier(pinv(A)*y,A,[],y,1);
 
-r=idct(x);
+r=idct(x)';
+data(1,M)=r(1,M);
+r=data;
 
 % subplot(5,1,1);plot(data);
 % title('Clipped signal')

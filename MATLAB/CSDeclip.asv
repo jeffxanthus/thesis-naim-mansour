@@ -83,12 +83,15 @@ switch methodChoice
 %           x=Threshold_ISD_1D(A,samples);
     case 5
 %         x=SolveLasso(A,samples,N); %--VERY SLOW, NOT THAT ACCURATE
-          [x,niter,residuals,outputData,opts] =NESTA(A,[],samples,muf,delta,opts)
+          options = struct('Verbose',0);
+          [x,niter,residuals,outputData,opts] =NESTA(A,[],samples,0.01,1e-4,options);
 end
 
 % x=l1qc_logbarrier(pinv(A)*y,A,[],y,1);
 
 r=idct(x);
+
+
 
 % subplot(5,1,1);plot(data);
 % title('Clipped signal')
