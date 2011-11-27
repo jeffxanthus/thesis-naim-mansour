@@ -51,11 +51,9 @@ if length(A)==0
 end
 
 %Calculate filtermatrix
-figure()
-plot(maskingThreshold)
-threshold = resample(maskingThreshold, length(A), length(maskingThreshold));
+threshold = resample(maskingThreshold, length(A), length(maskingThreshold), 0);
 W = perceptualWeightingMatrix(threshold);
-A = W.*A;
+A = A*W;
 
 Mpos=zeros(N,1);
 Mpos(Mp,:)=1;
