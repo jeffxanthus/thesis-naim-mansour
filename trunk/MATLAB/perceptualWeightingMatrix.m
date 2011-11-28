@@ -5,14 +5,10 @@ function [ H ] = perceptualWeightingMatrix( maskingThreshold)
 
 K = length(maskingThreshold);
 H = zeros(K,K);
-A = 1-maskingThreshold;
-A(1:10) = A(11);
-A(K-10:K) = A(K-11);
-A = A + abs(min(A));
+A = 1./maskingThreshold;
 
-
-%figure(6);
-%plot(A)
+figure();
+plot(maskingThreshold)
 
 %plot(A);
 
@@ -23,7 +19,7 @@ for n = 1:K
    for k = 1:K
        sum = sum + sqrt(A(k))*cos(2*pi*k*n/K);
    end
-   h(n) = ceil(sum/K);
+   h(n) = sum/K;
 end
 
 %Generate the matrix
