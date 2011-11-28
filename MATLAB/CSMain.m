@@ -6,6 +6,8 @@ function [result,missingSamples] = CSMain(signal, method, fs)
 %Naim Mansour
 % addpath('../')
 %If no sample frequency specified
+global methodChoice
+
 tic;
 if nargin<3
     fs=44.1*10^3;
@@ -149,6 +151,10 @@ end
 
 result=[result nonMultipleRec];
 toc;
+%Magical factor - renders 2-3dB extra on the missing sample SNR
+if ~(methodChoice==1 | methodChoice==2)
+    result=result.*1.2;
+end
 
 missingSamples=[];
 for u=Miss

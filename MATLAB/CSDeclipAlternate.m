@@ -55,7 +55,7 @@ delta=eye(N);
 for i=1:N
     delta(i,i)=1./norm(Re*A(:,i),2);
 end
-A=Re*A*delta;
+A=Re*A.*delta;
 
 %Solve the constrained L1 optimization (with lambda regularization)
 switch methodChoice

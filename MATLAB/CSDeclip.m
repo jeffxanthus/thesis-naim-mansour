@@ -51,6 +51,7 @@ if length(A)==0
     return;
 end
 
+%Extra constraints
 Mpos=zeros(N,1);
 Mpos(Mp,:)=1;
 Mneg=zeros(N,1);
@@ -59,10 +60,15 @@ MclA=diag(Mneg-Mpos)*B;
 eps=0.9;
 offSet=max(abs(samples))*eps;
 
+
+
+
 if regularization==[]
     regularization=0.01;
 end
-methodChoice = 3;
+if methodChoice == []
+    methodChoice=3;
+end
 %Solve the constrained L1 optimization (with lambda regularization)
 switch methodChoice
     case 1
@@ -82,11 +88,21 @@ switch methodChoice
           [x,niter,residuals,outputData,opts] =NESTA(A,[],samples,0.01,1e-4,options);
 end
 
-% x=l1qc_logbarrier(pinv(A)*y,A,[],y,1);
-
 r=idct(x)';
 data(1,M)=r(1,M);
 r=data;
+
+% for g=Mp
+%     temp=r(1,g)
+%     if r(1,g)<MaxS
+%         r(1,g)=MaxS;
+%     end
+% end
+% for h=Mn
+%     if r(1,h)>MinS
+%         r(1,h)=MinS;
+%     end
+% end
 
 % subplot(5,1,1);plot(data);
 % title('Clipped signal')

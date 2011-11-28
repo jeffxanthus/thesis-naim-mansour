@@ -68,6 +68,14 @@ opts.UT = true;
 opts_tr.UT = true; opts_tr.TRANSA = true;
 machPrec = 1e-5;
 
+%Weighting to normalize the columns of A
+W=eye(N);
+for i=1:N
+    a=A(:,i);
+    W(i,i)=1./norm(a);
+end
+A=A*W;
+
 % Initialize
 x = zeros(N,1);
 k = 1;
@@ -126,6 +134,7 @@ while ~done
 end
 
 iters = k;
+x=W*x;
 activationHist = activeSet;
 clear opts opts_tr machPrec
 
