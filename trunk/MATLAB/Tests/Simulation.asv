@@ -5,7 +5,7 @@ function [dataToUse,reconstruction,origSamples, missingSamples,SNR,SNRm,SNROrig,
 %   method: 1=> Ax=y, 2=>Ax+Be=y
 
 [data, largeData, mediumData, smallData, tinyData, fs, noBits]=InitializeTestVariables('bach_partita.wav',offSet);
-plot
+
 fs=44000;
 switch size
     case {0}

@@ -78,7 +78,7 @@ res = y;
 normy = norm(y);
 resnorm = normy;             
 done = 0;
-eps=0.9;
+eps=0.8;
 offSet=max(abs(y))*eps;
 
 while ~done

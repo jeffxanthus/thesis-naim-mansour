@@ -5,7 +5,7 @@ global methodChoice
 %global A
 %global samples
 global regularization
-addpath('ISD_v1.1')
+addpath('NESTA_v1.1')
 
 [rs cs]=size(data);
 if(rs~=1)
@@ -43,7 +43,7 @@ samples=samples';
 % A=DCTBase(N,N,-1);
 A=dctmtx(N)';
 B=A;
-A(M,:)=0; 
+A(M,:)=[]; 
 
 if length(A)==0
     disp('Clipping length exceeds frame length')
@@ -62,17 +62,17 @@ Mneg(Mn,:)=1;
 MclA=diag(Mneg-Mpos)*B;
 eps=0.9;
 offSet=max(abs(samples))*eps;
-% pause
-%INHERENT PROBLEM, size of A needs to be consistent, not possible with only
-%samples available - YES already solved (introducing don't care zeros)
-%....
+
 
 if regularization == []
     regularization=0.01;
 end
+if methodChoice == []
+    methodChoice=3;
+end
+%Solve the constrained L1 optimization (with lambda regularization)
 
 %Solve the constrained L1 optimization (with lambda regularization)
-methodChoice = 3;
 switch methodChoice
     case 1
         x=SolveOMP(A,samples,N,50); %--FAST FAVORITE SO FAR
@@ -83,15 +83,17 @@ switch methodChoice
 %         options = optimset('Algorithm','interior-point','Display','on');
 %         [x, fval]=fmincon(@L1Norm,offSet*ones(N,1),MclA,offSet*ones(length(MclA),1),[],[],[],[],@L2Norm,options);
     case 4
-        x=IRL1(A,samples,N,50,0.007,1e-3); %Development in progress
+        x=IRL1(A,samples,N,50,0,1e-4); %Development in progress
 %           x=Threshold_ISD_1D(A,samples);
     case 5
-        x=SolveLasso(A,samples,N); %--VERY SLOW, NOT THAT ACCURATE
+%         x=SolveLasso(A,samples,N); %--VERY SLOW, NOT THAT ACCURATE
+          options = struct('Verbose',0);
+          [x,niter,residuals,outputData,opts]=NESTA(A,[],samples,0.01,1e-4,options);
 end
 
-% x=l1qc_logbarrier(pinv(A)*y,A,[],y,1);
-
-r=idct(x);
+r=idct(x)';
+data(1,M)=r(1,M);
+r=data;
 
 % subplot(5,1,1);plot(data);
 % title('Clipped signal')
