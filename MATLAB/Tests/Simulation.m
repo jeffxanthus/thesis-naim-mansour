@@ -19,7 +19,7 @@ switch size
 end
 
 estimateSparsity(dataToUse)
-pause
+
 if nargin > 4
     input=Clip(dataToUse,clip,clipamount);
 else
@@ -43,15 +43,19 @@ end
 originalSamples=dataToUse(:,origSamples);
 originalClipped=input(:,origSamples);
 
-subplot(4,1,1);plot(originalSamples,'r.')
+subplot(6,1,1);plot(originalSamples,'r.')
 title('Clipped values in original signal')
-subplot(4,1,2);plot(originalClipped,'g.')
+subplot(6,1,2);plot(originalClipped,'g.')
 title('Clipped values')
-subplot(4,1,3);plot(missingSamples,'.')
+subplot(6,1,3);plot(missingSamples,'.')
 title('"Clipped values" in reconstructed signal')
-subplot(4,1,4);plot(abs((originalSamples-missingSamples)./originalSamples))
+subplot(6,1,4);plot(abs((originalSamples-missingSamples)./originalSamples))
 title('Relative error')
 axis([0 length(originalSamples) 0 0.5])
+subplot(6,1,5);plot(dataToUse,'r')
+title('Original signal')
+subplot(6,1,6);plot(reconstruction,'b')
+title('Reconstructed signal')
 % pause
 SNR=Evaluation(dataToUse,reconstruction,fs,noBits)
 SNRmorig=Evaluation(originalSamples,originalClipped,fs,noBits)
