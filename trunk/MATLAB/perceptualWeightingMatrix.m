@@ -19,6 +19,7 @@ for n = 1:K
    for k = 1:K
        sum = sum + sqrt(A(k))*cos(2*pi*k*n/K);
    end
+
    h(n) = sum/K;
 end
 

@@ -105,16 +105,21 @@ U=[];
 window=hann(numberOfSamples+1); %Hann window (with 50% overlap)
 shiftAmount=(1-(frameOverlap/100))*numberOfSamples+1;%=442 in typical case
 position = shiftAmount;
-masking = maskingThreshold(1);
+%masking = maskingThreshold(1);
 i=1;
 while i<=cst
     disp(['Now declipping frame ' int2str(i) ' out of ' int2str(cst)])
-    if(method==1)
+    if i == 1
         [dummy U(:,i)]=CSDeclip(T(:,i));
-    elseif (method==2)
-        U(:,i)=CSDeclipAlternate(T(:,i));
-    elseif (method==3)
-        [dummy U(:,i)]=CSPerceptualDeclip(T(:,i), masking);
+        masking = meanMaskingThreshold(U(:,i)');
+    else 
+        if(method==1)
+            [dummy U(:,i)]=CSDeclip(T(:,i));
+        elseif (method==2)
+            U(:,i)=CSDeclipAlternate(T(:,i));
+        elseif (method==3)
+            [dummy U(:,i)]=CSPerceptualDeclip(T(:,i), masking);
+        end
     end
     
     disp('Reconstructing...')    
@@ -124,6 +129,7 @@ while i<=cst
             result=U';
         else
             result=[U(1:shiftAmount-1,1)' (window(shiftAmount:end,1).*U(shiftAmount:end,1))'];
+          %  masking = meanMaskingThreshold(U(:,i)');
         end
     elseif i==cst
         %Condition on last frame

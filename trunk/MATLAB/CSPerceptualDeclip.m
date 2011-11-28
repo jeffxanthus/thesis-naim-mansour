@@ -57,6 +57,9 @@ threshold = resample(maskingThreshold, length(A), length(maskingThreshold));
 W = perceptualWeightingMatrix(threshold);
 A = W.*A;
 
+bla = samples' * W;
+samples = bla';
+
 Mpos=zeros(N,1);
 Mpos(Mp,:)=1;
 Mneg=zeros(N,1);
@@ -88,6 +91,7 @@ switch methodChoice
         x=IRL1(A,samples,N,50,0,1e-4); %Development in progress
 %           x=Threshold_ISD_1D(A,samples);
     case 5
+
 %         x=SolveLasso(A,samples,N); %--VERY SLOW, NOT THAT ACCURATE
           options = struct('Verbose',0);
           [x,niter,residuals,outputData,opts]=NESTA(A,[],samples,0.01,1e-4,options);
@@ -97,20 +101,20 @@ r=idct(x)';
 data(1,M)=r(1,M);
 r=data;
 
-% subplot(5,1,1);plot(data);
-% title('Clipped signal')
-% axis([0 N (min(data)-1) (max(data)+1)])
-% subplot(5,1,2);plot(r(1:N,1));
-% title('Reconstructed signal')
-% axis([0 N (min(r)-1) (max(r)+1)])
-% % subplot(5,1,3);plot(orig)
-% % title('Original signal')
-% % axis([0 N (min(orig)-1) (max(orig)+1)])
-% subplot(5,1,4);plot(samples)
-% title('Samples')
-% axis([0 N (min(samples)-1) (max(samples)+1)])
-% subplot(5,1,5);plot(abs(x))
-% title('Spectral representation of reconstruction')
-% axis([0 N (min(abs(x))-1) (max(abs(x))+1)])
+subplot(5,1,1);plot(data);
+title('Clipped signal')
+axis([0 N (min(data)-1) (max(data)+1)])
+subplot(5,1,2);plot(r(1:N,1));
+title('Reconstructed signal')
+axis([0 N (min(r)-1) (max(r)+1)])
+% subplot(5,1,3);plot(orig)
+% title('Original signal')
+% axis([0 N (min(orig)-1) (max(orig)+1)])
+subplot(5,1,4);plot(samples)
+title('Samples')
+axis([0 N (min(samples)-1) (max(samples)+1)])
+subplot(5,1,5);plot(abs(x))
+title('Spectral representation of reconstruction')
+axis([0 N (min(abs(x))-1) (max(abs(x))+1)])
 end
 
