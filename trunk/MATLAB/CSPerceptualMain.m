@@ -5,7 +5,6 @@ function [result,missingSamples] = CSPerceptualMain(signal, method, fs)
 %   method: Type 1 for classical y=Ax constraints, 2 for y=Ax+Beconstraints
 %                3 for perceptual y =Ax
 %   Naim Mansour and Steven De Hertogh
-global methodChoice
 
 %If no sample frequency specified
 tic;
@@ -149,6 +148,7 @@ while i<=cst
 end
 
 
+
 %Non-multiple part
 if(method==1)
         [dummy nonMultipleRec]=CSDeclip(nonMultiplePart);
@@ -158,13 +158,8 @@ elseif(method == 3)
         [dummy nonMultipleRec]=CSPerceptualDeclip(nonMultiplePart, masking);
 end
 
-result=[result nonMultipleRec];
+result=[result nonMultipleRec'];
 toc;
-
-%Magical factor - renders 2-3dB extra on the missing sample SNR
-if ~(methodChoice==1 | methodChoice==2)
-    result=result.*1.2;
-end
 
 missingSamples=[];
 for u=Miss
@@ -174,6 +169,8 @@ for u=Miss
         disp('Missing sample skipped');
     end
 end
+
+
 
 figure();
 subplot(3,1,1);plot(origSig);
