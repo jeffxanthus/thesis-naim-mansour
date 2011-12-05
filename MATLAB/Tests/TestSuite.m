@@ -2,6 +2,8 @@ function [SNRres SNRmres] = TestSuite()
 %TESTSUITE 
 global methodChoice
 global regularization
+global clip
+global fL
 
 addpath('../');
 dataO=[];
@@ -9,13 +11,15 @@ SNRres=[];
 SNRmres=[];
 k=1;
 
-methodChoice=2;
+methodChoice=5;
 regularization=0;
+fL=64;
 
-for i=[0.5 0.85];% 0.75   0.7 0.65 0.6 0.55 0.5];
+for i=[0.75 0.85];% 0.75   0.7 0.65 0.6 0.55 0.5];
     i
+    clip=i;
     disp(['Iteration ' int2str(k) ', for clipping ratio ' num2str(i)]);
-    [dataOrig, reconstruction, dummy1, dummy2, SNR, SNRm,SNROrig,SNRmorig]=Simulation(i,2,1,300000);
+    [dataOrig, reconstruction, dummy1, dummy2, SNR, SNRm,SNROrig,SNRmorig,ODGmorig,ODGm]=Simulation(i,1,1,300000);
     SNROrig
     SNR
     SNRmorig

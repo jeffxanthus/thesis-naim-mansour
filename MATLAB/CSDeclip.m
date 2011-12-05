@@ -89,20 +89,20 @@ switch methodChoice
 end
 
 r=idct(x)';
+
+%Magical factor - renders 2-3dB extra on the missing sample SNR
+if ~(methodChoice==1 | methodChoice==2)
+%     if clip>=0.7
+    r=r.*1.1;
+%     elseif clip>=0.5
+%         result=result.*1.2;
+%     else
+%         result=result.*1.3;
+%     end 
+end
+
 data(1,M)=r(1,M);
 r=data;
-
-% for g=Mp
-%     temp=r(1,g)
-%     if r(1,g)<MaxS
-%         r(1,g)=MaxS;
-%     end
-% end
-% for h=Mn
-%     if r(1,h)>MinS
-%         r(1,h)=MinS;
-%     end
-% end
 
 % subplot(5,1,1);plot(data);
 % title('Clipped signal')

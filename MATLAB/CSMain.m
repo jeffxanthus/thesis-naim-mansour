@@ -7,8 +7,10 @@ function [result,missingSamples] = CSMain(signal, method, fs)
 % addpath('../')
 %If no sample frequency specified
 global methodChoice
-
+global clip
+global fL
 tic;
+
 if nargin<3
     fs=44.1*10^3;
 end
@@ -44,7 +46,7 @@ end
 frameLength=floor(((rs/maxAmountOfFrames)/fs)*1000);
 %Computational bound
 % frameLength=min(frameLength,60); %Problems with divisibility
-frameLength=64;
+frameLength=fL;
 % frameLength=30; %in milliseconds
 if mod(fs*frameLength,1000)~=0
     disp('Infeasible sampling frequency, using default')
@@ -151,10 +153,6 @@ end
 
 result=[result nonMultipleRec];
 toc;
-%Magical factor - renders 2-3dB extra on the missing sample SNR
-if ~(methodChoice==1 | methodChoice==2)
-    result=result.*1.2;
-end
 
 missingSamples=[];
 for u=Miss

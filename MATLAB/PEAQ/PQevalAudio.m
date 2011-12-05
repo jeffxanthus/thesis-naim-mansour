@@ -1,4 +1,4 @@
-function PQevalAudio (Fref, Ftest, StartS, EndS)
+function[ODG]= PQevalAudio (Fref, Ftest, StartS, EndS)
 % Perceptual evaluation of audio quality.
 
 % - StartS shifts the frames, so that the first frame starts at that sample.
@@ -27,7 +27,10 @@ PQopt.DelayOverlap = 1;
 PQopt.DataBounds = 1;
 PQopt.EndMin = NF / 2;
 
-addpath ('CB', 'MOV', 'Misc', 'Patt');
+addpath ('C:\Users\Naim\Documents\K.U. Leuven\Thesis\MATLAB\PEAQ\CB',...
+    'C:\Users\Naim\Documents\K.U. Leuven\Thesis\MATLAB\PEAQ\MOV',...
+    'C:\Users\Naim\Documents\K.U. Leuven\Thesis\MATLAB\PEAQ\Misc',...
+    'C:\Users\Naim\Documents\K.U. Leuven\Thesis\MATLAB\PEAQ\Patt');
 
 if (nargin < 3)
     StartS = [0, 0];
