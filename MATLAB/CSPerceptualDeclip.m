@@ -94,6 +94,12 @@ switch methodChoice
 end
 
 r=idct(x)';
+
+%Magical factor - renders 2-3dB extra on the missing sample SNR
+if ~(methodChoice==1 | methodChoice==2)
+    r=r.*1.1;
+end
+
 data(1,M)=r(1,M);
 r=data;
 
