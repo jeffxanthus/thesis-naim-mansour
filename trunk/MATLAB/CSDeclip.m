@@ -91,15 +91,14 @@ end
 r=idct(x)';
 
 %Magical factor - renders 2-3dB extra on the missing sample SNR
-missingRatio=length(M)/N
-pause
+missingRatio=length(M)/N;
 if ~(methodChoice==1 | methodChoice==2)
     if missingRatio<=0.03
     r=r.*1.1;
     elseif missingRatio<=0.2
-        result=result.*1.2;
+        r=r.*1.2;
     else
-        result=result.*1.3;
+        r=r.*1.3;
     end 
 end
 

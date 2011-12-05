@@ -101,9 +101,9 @@ if ~(methodChoice==1 | methodChoice==2)
     if missingRatio<=0.03
     r=r.*1.1;
     elseif missingRatio<=0.2
-        result=result.*1.2;
+        r=r.*1.2;
     else
-        result=result.*1.3;
+        r=r.*1.3;
     end 
 end
 
