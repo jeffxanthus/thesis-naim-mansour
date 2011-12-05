@@ -1,4 +1,4 @@
-function [dataToUse,reconstruction,origSamples, missingSamples,SNR,SNRm,SNROrig,SNRmorig] = Simulation(clip,size,method,offSet,clipamount)
+function [dataToUse,reconstruction,origSamples, missingSamples,SNR,SNRm,SNROrig,SNRmorig,ODGmorig,ODGm] = Simulation(clip,size,method,offSet,clipamount)
 %TESTSUITE Summary of this function goes here
 %   clip: clipping percentage (between 0 & 1)
 %   size: 1=small, 2=medium, 3=large
@@ -26,7 +26,7 @@ else
     input=Clip(dataToUse,clip);
 end
 
-SNROrig=Evaluation(dataToUse,input,fs); 
+[SNROrig ODGOrig]=Evaluation(dataToUse,input,fs); 
 
 [reconstruction, missingSamples]=CSMain(input,method,fs);
 
@@ -57,8 +57,8 @@ title('Original signal')
 subplot(6,1,6);plot(reconstruction,'b')
 title('Reconstructed signal')
 % pause
-SNR=Evaluation(dataToUse,reconstruction,fs,noBits)
-SNRmorig=Evaluation(originalSamples,originalClipped,fs,noBits)
-SNRm=Evaluation(originalSamples,missingSamples,fs,noBits)
+[SNR ODG]=Evaluation(dataToUse,reconstruction,fs,noBits)
+[SNRmorig ODGmorig]=Evaluation(originalSamples,originalClipped,fs,noBits)
+[SNRm ODGm]=Evaluation(originalSamples,missingSamples,fs,noBits)
 end
 
