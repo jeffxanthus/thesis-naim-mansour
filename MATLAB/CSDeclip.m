@@ -6,8 +6,6 @@ global methodChoice
 % global samples
 global regularization
 
-addpath('NESTA_v1.1')
-
 [rs cs]=size(data);
 if(rs~=1)
     data=data';
@@ -56,7 +54,7 @@ Mpos=zeros(N,1);
 Mpos(Mp,:)=1;
 Mneg=zeros(N,1);
 Mneg(Mn,:)=1;
-MclA=diag(Mneg-Mpos)*B;
+% MclA=diag(Mneg-Mpos)*B;
 eps=0.9;
 offSet=max(abs(samples))*eps;
 
@@ -84,23 +82,53 @@ switch methodChoice
 %           x=Threshold_ISD_1D(A,samples);
     case 5
 %         x=SolveLasso(A,samples,N); %--VERY SLOW, NOT THAT ACCURATE
-          options = struct('Verbose',0);
-          [x,niter,residuals,outputData,opts] =NESTA(A,[],samples,0.01,1e-4,options);
+%           options = struct('Verbose',0);
+%           [x,niter,residuals,outputData,opts]=NESTA(A,[],samples,0.01,1e-4,options);
+        disp('This option no longer exists.')
+        disp('Too bad...')
+        return;
 end
 
 r=idct(x)';
 
+
 %Magical factor - renders 2-3dB extra on the missing sample SNR
-missingRatio=length(M)/N;
-if ~(methodChoice==1 | methodChoice==2)
-    if missingRatio<=0.05
-    r=r.*1.1;
-    elseif missingRatio<=0.2
-        r=r.*1.2;
-    else
-        r=r.*1.3;
-    end 
-end
+% missingRatio=length(M)/N;
+% if ~(methodChoice==1 | methodChoice==2)
+%     if missingRatio<=0.15
+%     limit=1.1
+%     elseif missingRatio<=0.2
+%         limit=1.2
+%     else
+%         limit=1.3
+%     end 
+% end
+
+%r=limit.*r;
+
+% stop=false;
+% k=1;
+% while ~stop
+%     mlength=1;
+%     while (k<=length(M)-1 && M(1,k+1)==M(1,k)+1)
+%         mlength=mlength+1;
+%         k=k+1;
+%     end
+%     if mod(mlength,2)==0
+%         factor=[linspace(1,limit,mlength/2) linspace(limit,1,mlength/2)];
+%     else
+%         factor=[linspace(1,limit,(mlength-1)/2) limit linspace(limit,1,(mlength-1)/2)];
+%     end
+%     if mlength==1
+%         factor=1;
+%     end
+%    r(1,M(1,k)-(mlength-1):M(1,k))=factor.*r(1,M(1,k)-(mlength-1):M(1,k));
+%     k=k+1;
+%     if k>length(M)
+%         stop=true;
+%     end
+% end
+
 
 data(1,M)=r(1,M);
 r=data;

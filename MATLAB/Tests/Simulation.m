@@ -1,4 +1,4 @@
-function [dataToUse,reconstruction,origSamples, missingSamples,SNR,SNRm,SNROrig,SNRmorig,ODGmorig,ODGm] = Simulation(clip,size,method,offSet,clipamount)
+function [input,reconstruction,origSamples, missingSamples,SNR,SNRm,SNROrig,SNRmorig,ODGmorig,ODGm] = Simulation(clip,size,method,offSet,clipamount)
 %TESTSUITE Summary of this function goes here
 %   clip: clipping percentage (between 0 & 1)
 %   size: 1=small, 2=medium, 3=large
@@ -6,7 +6,6 @@ function [dataToUse,reconstruction,origSamples, missingSamples,SNR,SNRm,SNROrig,
 
 [data, largeData, mediumData, smallData, tinyData, fs, noBits]=InitializeTestVariables('bach_partita.wav',offSet);
 
-fs=44000;
 switch size
     case {0}
         dataToUse=tinyData;
@@ -43,22 +42,25 @@ end
 originalSamples=dataToUse(:,origSamples);
 originalClipped=input(:,origSamples);
 
-subplot(6,1,1);plot(originalSamples,'r.')
+subplot(4,1,1);plot(dataToUse,'r.')
 title('Clipped values in original signal')
-subplot(6,1,2);plot(originalClipped,'g.')
+subplot(4,1,2);plot(input,'g.')
 title('Clipped values')
-subplot(6,1,3);plot(missingSamples,'.')
+subplot(4,1,3);plot(reconstruction,'.')
 title('"Clipped values" in reconstructed signal')
-subplot(6,1,4);plot(abs((originalSamples-missingSamples)./originalSamples))
+subplot(4,1,4);plot(abs((dataToUse-reconstruction)./dataToUse))
 title('Relative error')
-axis([0 length(originalSamples) 0 0.5])
-subplot(6,1,5);plot(dataToUse,'r')
-title('Original signal')
-subplot(6,1,6);plot(reconstruction,'b')
-title('Reconstructed signal')
+% axis([0 length(originalSamples) 0 0.5])
+% subplot(6,1,5);plot(dataToUse,'r')
+% title('Original signal')
+% subplot(6,1,6);plot(reconstruction,'b')
+% title('Reconstructed signal')
 % pause
 [SNR ODG]=Evaluation(dataToUse,reconstruction,fs,noBits)
 [SNRmorig ODGmorig]=Evaluation(originalSamples,originalClipped,fs,noBits)
 [SNRm ODGm]=Evaluation(originalSamples,missingSamples,fs,noBits)
+
+ODG
+ODGOrig
 end
 

@@ -5,7 +5,6 @@ global methodChoice
 %global A
 %global samples
 global regularization
-addpath('NESTA_v1.1')
 
 [rs cs]=size(data);
 if(rs~=1)
@@ -61,7 +60,7 @@ Mpos=zeros(N,1);
 Mpos(Mp,:)=1;
 Mneg=zeros(N,1);
 Mneg(Mn,:)=1;
-MclA=diag(Mneg-Mpos)*B;
+% MclA=diag(Mneg-Mpos)*B;
 eps=0.9;
 offSet=max(abs(samples))*eps;
 
@@ -72,7 +71,6 @@ end
 if methodChoice == []
     methodChoice=3;
 end
-%Solve the constrained L1 optimization (with lambda regularization)
 
 %Solve the constrained L1 optimization (with lambda regularization)
 switch methodChoice
@@ -89,27 +87,31 @@ switch methodChoice
 %           x=Threshold_ISD_1D(A,samples);
     case 5
 %         x=SolveLasso(A,samples,N); %--VERY SLOW, NOT THAT ACCURATE
-          options = struct('Verbose',0);
-          [x,niter,residuals,outputData,opts]=NESTA(A,[],samples,0.01,1e-4,options);
+%           options = struct('Verbose',0);
+%           [x,niter,residuals,outputData,opts]=NESTA(A,[],samples,0.01,1e-4,options);
+        disp('This option no longer exists.')
+        disp('Too bad...')
+        return;
 end
 
 r=idct(x)';
-
-%Magical factor - renders 2-3dB extra on the missing sample SNR
-missingRatio=length(M)/N;
-if ~(methodChoice==1 | methodChoice==2)
-    if missingRatio<=0.05
-    r=r.*1.1;
-    elseif missingRatio<=0.2
-        r=r.*1.2;
-    else
-        r=r.*1.3;
-    end 
-end
-
 data(1,M)=r(1,M);
 r=data;
 
+
+
+
+% %Magical factor - renders 2-3dB extra on the missing sample SNR
+% missingRatio=length(M)/N;
+% if ~(methodChoice==1 | methodChoice==2)
+%     if missingRatio<=0.05
+%     r=r.*1.1;
+%     elseif missingRatio<=0.2
+%         r=r.*1.2;
+%     else
+%         r=r.*1.3;
+%     end 
+% end
 % subplot(5,1,1);plot(data);
 % title('Clipped signal')
 % axis([0 N (min(data)-1) (max(data)+1)])

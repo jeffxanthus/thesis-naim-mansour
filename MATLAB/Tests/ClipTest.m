@@ -18,7 +18,5 @@ for t=1:5
         end
         newSize(i,1)=newSize(i,1)./originalSize;
     end
-
     clips=[clipVec ; newSize']
-    pause
 end

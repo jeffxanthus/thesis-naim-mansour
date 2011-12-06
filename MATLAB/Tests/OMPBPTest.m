@@ -55,9 +55,9 @@ for k=methodChoices
             disp(['Now simulating for method ' num2str(k) ', clipping level ' num2str(clipping(1,i)) ', and sample ' num2str(j)])
             [ReconstructedSignal ReconstructedSamples]=CSMain(input,method,fs);
             
-            [dummy1 ODG]=Evaluation(smallData,ReconstructedSignal,fs,noBits);
-            [dummy2 ODGorig]=Evaluation(smallData,input,fs,noBits);
-            
+            [dummy1 ODG]=Evaluation(smallData,ReconstructedSignal,fs,noBits)
+            [dummy2 ODGorig]=Evaluation(smallData,input,fs,noBits)
+           
             [SNR dummy3]=Evaluation(originalSamples,ReconstructedSamples,fs,noBits);
             [SNRorig dummy4]=Evaluation(originalSamples,originalClipped,fs,noBits);
             

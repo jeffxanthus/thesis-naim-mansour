@@ -1,4 +1,4 @@
-function [SNRres SNRmres] = TestSuite()
+function [input reconstruction SNRres SNRmres] = TestSuite()
 %TESTSUITE 
 global methodChoice
 global regularization
@@ -11,21 +11,21 @@ SNRres=[];
 SNRmres=[];
 k=1;
 
-methodChoice=5;
+methodChoice=3;
 regularization=0;
-fL=64;
+fL=20;
 
-for i=[0.75 0.85];% 0.75   0.7 0.65 0.6 0.55 0.5];
+for i=[0.75];% 0.75   0.7 0.65 0.6 0.55 0.5];
     i
     clip=i;
     disp(['Iteration ' int2str(k) ', for clipping ratio ' num2str(i)]);
-    [dataOrig, reconstruction, dummy1, dummy2, SNR, SNRm,SNROrig,SNRmorig,ODGmorig,ODGm]=Simulation(i,1,1,300000);
+    [input, reconstruction, dummy1, dummy2, SNR, SNRm,SNROrig,SNRmorig,ODGmorig,ODGm]=Simulation(i,1,1,300000);
     SNROrig
     SNR
     SNRmorig
     SNRm
     pause
-    sound(dataOrig,44100)
+    sound(input,44100)
     pause
     sound(reconstruction,44100)
     pause
@@ -34,9 +34,9 @@ for i=[0.75 0.85];% 0.75   0.7 0.65 0.6 0.55 0.5];
     SNRmres=[SNRmres SNRm];
     k=k+1;
 end
-figure(2)
-subplot(2,1,1);plot(SNRres);
-axis([i(1) i(end) 0 40])
-subplot(2,1,2);plot(SNRmres);
-axis([i(1) i(end) 0 40])
+% figure(2)
+% subplot(2,1,1);plot(SNRres);
+% axis([i(1) i(end) 0 40])
+% subplot(2,1,2);plot(SNRmres);
+% axis([i(1) i(end) 0 40])
 end
