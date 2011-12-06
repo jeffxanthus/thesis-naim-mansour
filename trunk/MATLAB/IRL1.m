@@ -12,9 +12,8 @@ xNew=1*10^5.*ones(N,1);
 eps=1*10^(-4);
 
 x=zeros(N,1);
-% x0=SolveBP(A,y,N,maxIters,lambda,OptTol);
-options = struct('Verbose', 0);
-[x0,niter,residuals,outputData,opts]=NESTA(A,[],y,0.02,1e-3,options);
+x0=SolveBP(A,y,N,maxIters,lambda,OptTol);
+
 fFf=0.95;
 epsilon=chooseEpsilons(x0,N,fFf);
 
@@ -23,12 +22,9 @@ epsilon=chooseEpsilons(x0,N,fFf);
 while (it<iterCount) %norm(x-xNew)>eps &&
     disp(['Iteration count is now ' int2str(it)])
     x=xNew;
-%     B=A/W;
-%     xNew=SolveBP(B,y,N,maxIters,lambda,OptTol);
-    %GET BACK TO 5dB INCREASE PERFORMANCE!!!
-    options = struct('Verbose', 0, 'U', W,'maxiter',250,'MaxIntIter',3,'xplug',x0);
-    [xNew,niter,residuals,outputData,opts]=NESTA(A,[],y,0.02,1e-3,options);
-%     xNew=W\xNew;
+    B=A/W;
+    xNew=SolveBP(B,y,N,maxIters,lambda,OptTol);
+    xNew=W\xNew;
     close all;
 %     subplot(2,1,1);plot(xNew)
 %     subplot(2,1,2);plot(idct(xNew))
