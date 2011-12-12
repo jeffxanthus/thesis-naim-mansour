@@ -5,7 +5,7 @@ global methodChoice
 global regularization
 
 close all;
-methodChoice=1;
+methodChoice=3;
 regularization=0;
 [freq data]=SparseSignalConstructor(sparsity,length);
 method=1;
@@ -20,9 +20,9 @@ end
 k=1;
 % minimumSamples=length-100;
 sound(data,fs)
-for i=minimumSamples:50:minimumSamples+100
+for i=1002
     disp(['Iteration ' int2str(k) ', for amount of samples ' int2str(i)]);
-    input=Clip(data,1,length-i);
+    input=Clip(data,950/1000);
     subplot(2,1,1);plot(data)
     subplot(2,1,2);plot(input)
     pause
@@ -43,7 +43,8 @@ for i=minimumSamples:50:minimumSamples+100
     axis([0 length min(freq)-1 max(freq)+1])
     size(data)
     size(reconstruction)
-    SNR=Evaluation(data,reconstruction,fs)
+    SNR=Evaluation(data',reconstruction,fs)
+    SNR2=Evaluation(data',input,fs)
 %     SNRres=[SNRres SNR];
     sound(reconstruction,fs)
     pause

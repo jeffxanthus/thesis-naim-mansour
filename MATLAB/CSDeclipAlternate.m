@@ -1,4 +1,4 @@
-function [r,A] = CSDeclip(data)
+function [r,A] = CSDeclipAlternate(data)
 %CSDECLIP - data is already clipped signal
 % Author: Naim Mansour
 global methodChoice
@@ -50,12 +50,14 @@ I=eye(N);
 B(:,X)=[];
 
 Re=I-B*pinv(B);
+Re*Re-Re
 
 delta=eye(N);
 for i=1:N
     delta(i,i)=1./norm(Re*A(:,i),2);
 end
-A=Re*A.*delta;
+A=Re*A*delta;
+samples=Re*samples;
 
 %Solve the constrained L1 optimization (with lambda regularization)
 switch methodChoice
@@ -64,7 +66,7 @@ switch methodChoice
     case 2
         Delta_x=OMPDeclip(A,samples,N,MclA,50); %--FAST FAVORITE SO FAR - NOT USABLE YET
     case 3 
-        Delta_x=SolveBP(A,samples,N,30,0.0075,1e-4); %Investigate parameter impact
+        Delta_x=SolveBP(A,samples,N,50,0.01,1e-4); %Investigate parameter impact
     case 4
         Delta_x=IRL1(A,samples,N,50,0.01,1e-4); %Development in progress
     case 5
@@ -80,18 +82,18 @@ r=idct(x)';
 data(1,E)=r(1,E);
 r=data;
 
-subplot(5,1,1);plot(data);
-title('Clipped signal')
-axis([0 N (min(data)-1) (max(data)+1)])
-subplot(5,1,2);plot(r(1:N,1));
-title('Reconstructed signal')
-% subplot(5,1,3);plot(orig)
-% title('Original signal')
-% axis([0 N (min(orig)-1) (max(orig)+1)])
-subplot(5,1,4);plot(samples)
-title('Samples')
-axis([0 N (min(samples)-1) (max(samples)+1)])
-subplot(5,1,5);plot(abs(x))
-title('Spectral representation of reconstruction')
+% subplot(5,1,1);plot(data);
+% title('Clipped signal')
+% axis([0 N (min(data)-1) (max(data)+1)])
+% subplot(5,1,2);plot(r(1:N,1));
+% title('Reconstructed signal')
+% % subplot(5,1,3);plot(orig)
+% % title('Original signal')
+% % axis([0 N (min(orig)-1) (max(orig)+1)])
+% subplot(5,1,4);plot(samples)
+% title('Samples')
+% axis([0 N (min(samples)-1) (max(samples)+1)])
+% subplot(5,1,5);plot(abs(x))
+% title('Spectral representation of reconstruction')
 end
 
