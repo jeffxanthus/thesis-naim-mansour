@@ -1,4 +1,4 @@
-function [sols, iters, activationHist] = OMPDeclip(A, y, N, MclA, maxIters, lambdaStop, solFreq, verbose, OptTol)
+function [sols, iters, activationHist] = OMPDeclip(A, y, N, MclA, theta, maxIters, lambdaStop, solFreq, verbose, OptTol)
 % SolveOMP: Orthogonal Matching Pursuit
 % Usage
 %	[sols, iters, activationHist] = SolveOMP(A, y, N, maxIters, lambdaStop, solFreq, verbose, OptTol,Mp,Mn)
@@ -42,19 +42,19 @@ global B
 global yU
 
 
-if nargin < 9,
+if nargin < 10,
 	OptTol = 1e-5;
 end
-if nargin < 8,
+if nargin < 9,
     verbose = 0;
 end
-if nargin < 7,
+if nargin < 8,
     solFreq = 0;
 end
-if nargin < 6,
+if nargin < 7,
     lambdaStop = 0;
 end
-if nargin < 5,
+if nargin < 6,
     maxIters = length(y);
 end
 
@@ -78,8 +78,7 @@ res = y;
 normy = norm(y);
 resnorm = normy;             
 done = 0;
-eps=0.8;
-offSet=max(abs(y))*eps;
+offSet=max(abs(y));
 
 while ~done
     if (explicitA)
@@ -89,13 +88,36 @@ while ~done
     end
     [maxcorr i] = max(abs(corr));
     newIndex = i(1);
-    
     activeSet = [activeSet newIndex];
     %TO CHECK
 %     options = optimset('LargeScale','off'); 
 
 %     x = fmins('normax-b.m', x0, options, A, b); ALTERNATIVE
-    x(activeSet)=lsqlin(A(:,activeSet),y,MclA(:,activeSet),offSet*ones(length(MclA),1));
+%     MclA(:,activeSet)*(0.1.*(ones(length(activeSet),1)))
+%     theta
+%     pause
+      warning off all;
+      if length(activeSet)>maxIters-2%round(maxIters.*0.92)
+          options=optimset('Display','final','LargeScale','off','MaxIter',700);
+          x0=x(activeSet);
+         [x(activeSet),rnorm,res,error]=lsqlin(A(:,activeSet),y,MclA(:,activeSet),theta,[],[],[],[],[x0(1:end-1,1); mean(x0(1:end-1),1)],options);
+%          if error==-2
+%              theta=0.9.*theta;
+%              [x(activeSet),rnorm,res,error]=lsqlin(A(:,activeSet),y,MclA(:,activeSet),theta,[],[],[x(activeSet); mean(x(activeSet))]);
+%          end
+         if (error==-2 || error==-3 || error==-4 || error==-7)
+            x(activeSet)=lsqlin(A(:,activeSet),y);
+            disp('Error avoided')
+         end
+      else
+        x(activeSet)=lsqlin(A(:,activeSet),y);
+        disp('Normal lsq')
+      end
+%       J=gradient(y-A(:,activeSet)*x(activeSet));
+%       H=J'*J;
+%       f=J'*(y-A(:,activeSet)*x(activeSet));
+%         %TODO
+%       x(activeSet)=quadprog(H,f,MclA(:,activeSet),offSet*ones(length(MclA),1));
 %     B=A(:,activeSet);
 %     MclB=MclA(:,activeSet);
 %     yU=y;
@@ -112,6 +134,7 @@ while ~done
     resnorm = norm(res);
     
     if ((resnorm <= OptTol*normy) | ((lambdaStop > 0) & (maxcorr <= lambdaStop)))
+        length(activeSet)
         done = 1;
     end
 
@@ -121,6 +144,7 @@ while ~done
 
     k = k+1;
     if k >= maxIters
+        length(activeSet)
         done = 1;
     end
 

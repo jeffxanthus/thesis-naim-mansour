@@ -2,9 +2,10 @@ function [x,r] = CSDeclip(data)
 %CSDECLIP - data is already clipped signal
 %Naim Mansour
 global methodChoice
-% global A
-% global samples
+global A
+global samples
 global regularization
+
 
 [rs cs]=size(data);
 if(rs~=1)
@@ -38,100 +39,114 @@ for t=1:cs2 %border values possibly added to the clipped values - SOLVED
     end
 end
 samples=samples';
-%Remove all rows in the DCT base, according to the sampling matrix!
-% A=DCTBase(N,N,-1);
-A=dctmtx(N)';
-B=A;
-A(M,:)=[]; 
 
-if length(A)==0
-    disp('Clipping length exceeds frame length')
-    return;
-end
+%If no clipping exists, no reason to declip
+if length(M)>=1
+    %Remove all rows in the DCT base, according to the sampling matrix!
+    % A=DCTBase(N,N,-1);
+    A=dctmtx(N)';
+    B=A;
+    A(M,:)=[]; 
 
-%Extra constraints
-Mpos=zeros(N,1);
-Mpos(Mp,:)=1;
-Mneg=zeros(N,1);
-Mneg(Mn,:)=1;
-% MclA=diag(Mneg-Mpos)*B;
-eps=0.9;
-offSet=max(abs(samples))*eps;
-
-
-
-
-if regularization==[]
-    regularization=0.01;
-end
-if methodChoice == []
-    methodChoice=3;
-end
-%Solve the constrained L1 optimization (with lambda regularization)
-switch methodChoice
-    case 1
-        x=SolveOMP(A,samples,N,50); %--FAST FAVORITE SO FAR
-    case 2
-        x=OMPDeclip(A,samples,N,MclA,50); %--FAST FAVORITE SO FAR
-    case 3 
-        x=SolveBP(A,samples,N,50,regularization,1e-4); %Investigate parameter impact
-%         options = optimset('Algorithm','interior-point','Display','on');
-%         [x, fval]=fmincon(@L1Norm,offSet*ones(N,1),MclA,offSet*ones(length(MclA),1),[],[],[],[],@L2Norm,options);
-    case 4
-        x=IRL1(A,samples,N,50,0,1e-4); %Development in progress
-%           x=Threshold_ISD_1D(A,samples);
-    case 5
-%         x=SolveLasso(A,samples,N); %--VERY SLOW, NOT THAT ACCURATE
-%           options = struct('Verbose',0);
-%           [x,niter,residuals,outputData,opts]=NESTA(A,[],samples,0.01,1e-4,options);
-        disp('This option no longer exists.')
-        disp('Too bad...')
+    if length(A)==0
+        disp('Clipping length exceeds frame length')
         return;
+    end
+
+    %Extra constraints
+    MclA=zeros(N,N);
+    MclA(Mp,:)=-B(Mp,:);
+    MclA(Mn,:)=B(Mn,:);
+    eps=0.9;
+    offSetP=-max(samples)*eps;
+    offSetN=min(samples)*eps;
+    theta=(max(offSetP,offSetN)+5).*ones(N,1);
+    theta(Mp,:)=offSetP;
+    theta(Mn,:)=offSetN;
+    
+
+    if regularization==[]
+        regularization=0.01;
+    end
+    if methodChoice == []
+        methodChoice=3;
+    end
+
+    %Solve the constrained L1 optimization (with lambda regularization)
+    switch methodChoice
+        case 1
+            x=SolveOMP(A,samples,N,50); %--FAST FAVORITE SO FAR
+        case 2
+            x=OMPDeclip(A,samples,N,MclA,theta,80); %--FAST FAVORITE SO FAR
+        case 3 
+            x=SolveBP(A,samples,N,50,regularization,1e-4); %Investigate parameter impact
+%             options = optimset('Algorithm','interior-point','Display','on');
+%             [x, fval]=fmincon(@L1Norm,offSet*ones(N,1),MclA,theta,[],[],[],[],@L2Norm,options);
+        case 4
+            x=IRL1(A,samples,N,50,0,1e-4); %Development in progress
+    %           x=Threshold_ISD_1D(A,samples);
+        case 5
+    %         x=SolveLasso(A,samples,N); %--VERY SLOW, NOT THAT ACCURATE
+    %           options = struct('Verbose',0);
+    %           [x,niter,residuals,outputData,opts]=NESTA(A,[],samples,0.01,1e-4,options);
+            disp('This option no longer exists.')
+            disp('Too bad...')
+            return;
+    end
+
+    r=idct(x)';
+
+
+    %Magical factor - renders 2-3dB extra on the missing sample SNR
+    if ~(methodChoice==1 | methodChoice==2)
+        missingRatio=length(M)/N;
+        limit=1.1;
+           if missingRatio<=0.05
+            limit=1.1
+           elseif missingRatio<=0.4
+                limit=1.2
+           else
+                limit=1.3
+           end 
+        limit
+        stop=false;
+        k=1;
+        factor=1;
+        while ~stop
+            mlength=1;
+            factor=1;
+            while (k<=length(M)-1 && M(1,k+1)==M(1,k)+1)
+                mlength=mlength+1;
+                k=k+1;
+            end
+            if mlength>20
+                if mod(mlength,2)==0
+                    factor=[linspace(1,limit,mlength/2) linspace(limit,1,mlength/2)];
+                else
+                    factor=[linspace(1,limit,(mlength-1)/2) limit*1.01 linspace(limit,1,(mlength-1)/2)];
+                end
+            else
+                factor=ones(1,mlength);
+            end
+            size(r(1,M(1,k)-(mlength-1):M(1,k)))
+            size(factor)
+            r(1,M(1,k)-(mlength-1):M(1,k))=factor.*r(1,M(1,k)-(mlength-1):M(1,k));
+            k=k+1;
+            if k>length(M)
+                stop=true;
+            end
+        end
+    end
+    % r=limit.*r;
+
+    if ~(methodChoice==1 | methodChoice==2)
+        data(1,M)=r(1,M);
+        r=data;
+    end
+else
+    x=dct(data);
+    r=data;
 end
-
-r=idct(x)';
-
-
-%Magical factor - renders 2-3dB extra on the missing sample SNR
-% missingRatio=length(M)/N;
-% if ~(methodChoice==1 | methodChoice==2)
-%     if missingRatio<=0.15
-%     limit=1.1
-%     elseif missingRatio<=0.2
-%         limit=1.2
-%     else
-%         limit=1.3
-%     end 
-% end
-
-%r=limit.*r;
-
-% stop=false;
-% k=1;
-% while ~stop
-%     mlength=1;
-%     while (k<=length(M)-1 && M(1,k+1)==M(1,k)+1)
-%         mlength=mlength+1;
-%         k=k+1;
-%     end
-%     if mod(mlength,2)==0
-%         factor=[linspace(1,limit,mlength/2) linspace(limit,1,mlength/2)];
-%     else
-%         factor=[linspace(1,limit,(mlength-1)/2) limit linspace(limit,1,(mlength-1)/2)];
-%     end
-%     if mlength==1
-%         factor=1;
-%     end
-%    r(1,M(1,k)-(mlength-1):M(1,k))=factor.*r(1,M(1,k)-(mlength-1):M(1,k));
-%     k=k+1;
-%     if k>length(M)
-%         stop=true;
-%     end
-% end
-
-
-data(1,M)=r(1,M);
-r=data;
 
 % subplot(5,1,1);plot(data);
 % title('Clipped signal')

@@ -1,0 +1,19 @@
+function [xSol] = PrGradient(F,y,A,theta,x0,maxIter)
+%PRGRADIENT 
+%F=
+i=1;
+x=1e5;
+xNew=x0;
+eps=0.01;
+alpha=0.01;
+while i<maxIter && norm(xNew-x)>eps
+    x=xNew;
+    C=(A*x-theta);
+    if C<=zeros(length(theta),1)
+        g=gradient(norm(y-A*x).^2);
+    else
+        g=gradient(C);         
+    end     
+    xNew=x-alpha.*g;
+end
+
