@@ -1,0 +1,13 @@
+===== * * * =================================================================== * * *
+TOMLAB /SOL + /CGO + /Xpress MEX + /CPLEX Parallel 2-CPU + 21 more - Tomlab Optimizat
+=====================================================================================
+Problem: ---  1: qpExample                      f_k      -0.027777777777777790
+
+Solver: qpSolve.  EXIT=0.  INFORM=1.
+Active set strategy
+Optimal point found         
+First order multipliers >= 0
+
+Iter    4 
+CPU time: 0.046800 sec. Elapsed time: 0.037000 sec. 
+

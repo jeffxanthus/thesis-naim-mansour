@@ -1,0 +1,16 @@
+linprog (CPLEX): Optimization terminated successfully
+
+
+Run TOMLAB linprog on LP Example
+
+Constraints Ax-b_U   0.000000e+000  0.000000e+000
+Lambda.lower:        0.000000e+000  0.000000e+000
+Lambda.upper:        0.000000e+000  0.000000e+000
+Lambda.eqlin:      
+Lambda.ineqlin:     -1.857143e+000 -1.285714e+000
+x:                   2.571429e+000  1.714286e+000
+Output Structure
+      iterations: 2
+       algorithm: 'CPLEX: CPLEX Dual Simplex LP solver'
+    cgiterations: 0
+Function value       -26.57142857142857300000. ExitFlag 1

@@ -1,0 +1,47 @@
+mipTest1
+Knapsack problem. Variables 28. Knapsacks 2
+Branch and bound. Depth First, then Breadth.
+
+--- Branch & Bound converged! Iterations (nodes visited) =   714 Total LP Iterations =    713
+
+    Optimal Objective function =    -141278.0000000000000000
+x: 0  0  1 -0  1  1  1  1  0  1  0  1  1  1
+   0  0  0  0  1  0  1  0  1  1  0  1  0  0
+B: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+Branch & bound. Depth First, then Breadth. Priority weights.
+
+--- Branch & Bound converged! Iterations (nodes visited) =   470 Total LP Iterations =    469
+
+    Optimal Objective function =    -141278.0000000000000000
+x: 0  0  1 -0  1  1  1  1  0  1  0  1  1  1
+   0  0  0  0  1  0  1  0  1  1  0  1  0  0
+B: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+Branch and bound. Depth First, then Breadth. Knapsack Heuristic.
+    Found new BEST Knapsack. Nodes left      0. Nodes deleted      0.
+    Best IP function value          -139508.0000000000000000
+    Found new BEST Knapsack. Nodes left      1. Nodes deleted      0.
+    Best IP function value          -140768.0000000000000000
+    Found new BEST Knapsack. Nodes left      4. Nodes deleted      0.
+    Best IP function value          -141278.0000000000000000
+
+--- Branch & Bound converged! Iterations (nodes visited) =    96 Total LP Iterations =     95
+
+    Optimal Objective function =    -141278.0000000000000000
+x: 0  0  1 -0  1  1  1  1  0  1  0  1  1  1
+   0  0  0  0  1  0  1  0  1  1  0  1  0  0
+B: 1 1 -1 1 -1 -1 -1 -1 1 -1 0 -1 -1 -1 1 1 1 1 -1 1 -1 0 -1 -1 1 -1 -1 1
+Branch & bound. Depth First, then Breadth. Knapsack heuristic. Priority weights.
+    Found new BEST Knapsack. Nodes left      0. Nodes deleted      0.
+    Best IP function value          -139508.0000000000000000
+    Found new BEST Knapsack. Nodes left      1. Nodes deleted      0.
+    Best IP function value          -140768.0000000000000000
+    Found new BEST Knapsack. Nodes left      4. Nodes deleted      0.
+    Best IP function value          -141278.0000000000000000
+
+--- Branch & Bound converged! Iterations (nodes visited) =    94 Total LP Iterations =     93
+
+    Optimal Objective function =    -141278.0000000000000000
+x: 0  0  1 -0  1  1  1  1  0  1  0  1  1  1
+   0  0  0  0  1  0  1  0  1  1  0  1  0  0
+B: 1 1 -1 1 -1 -1 -1 -1 1 -1 0 -1 -1 -1 1 1 1 1 -1 1 -1 0 -1 -1 1 -1 -1 1
+diary off

@@ -1,0 +1,13 @@
+
+===== * * * =================================================================== * * *
+TOMLAB /SOL + /CGO + /Xpress MEX + /CPLEX Parallel 2-CPU + 21 more - Tomlab Optimizat
+=====================================================================================
+Problem: ---  1: lpExample                      f_k     -26.571428571428569000
+
+Solver: lpSimplex.  EXIT=0.
+Simplex method. Minimum reduced cost.
+Optimal solution found
+
+FuncEv    3 Iter    3 
+CPU time: 0.046800 sec. Elapsed time: 0.019000 sec. 
+
