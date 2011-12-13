@@ -1,0 +1,16 @@
+
+
+Run TOMLAB quadprog on QP Example
+
+Constraints Ax-b_U  -4.888889e+000  0.000000e+000
+Lambda.lower:        0.000000e+000  0.000000e+000
+Lambda.upper:        0.000000e+000  0.000000e+000
+Lambda.eqlin:       -3.500000e+000
+Lambda.ineqlin:     -5.102800e-016
+x:                   5.555556e-002  5.555556e-002
+Output Structure
+       iterations: 1
+        algorithm: 'qpopt: QPOPT 1.0 QP/LP code'
+     cgiterations: []
+    firstorderopt: []
+Function value        -0.02777777777777779000. ExitFlag 1

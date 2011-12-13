@@ -1,0 +1,85 @@
+
+TOMLAB STAND ALONE (SAL) EXCEL EXAMPLE
+*************************************
+
+Requirements
+============
+
+To build and run this example these requirements must be met:
+
+ * MATLAB Builder for Excel
+ * IMPORTANT: TOMLAB STAND ALONE license file for TOMLAB /CPLEX.
+   DEMO USERS CAN NOT RUN THIS EXAMPLE! Contact tomlab@tomopt.com for more
+   information about this.
+
+Files
+=====
+
+  copyexfiles.m    Script for copying the needed m-/mex-files into
+                   this working directory.
+  exmake.bat       DOS batch script for building the example.
+  lpsolver.xls     Microsoft Excel workbook containing Visual Basic
+                   macro script code
+  README           This file.
+  solvelp.m        A simple interface function to act between MATLAB
+                   and Excel.
+
+Building the example
+====================
+
+Copying files
+-------------
+
+This example is not ready for building as is. The m-file 'copyexfiles.m'
+has to be executed in MATLAB in order to copy the needed files into
+this directory. There are two reasons for this:
+
+ 1. To not have multiple copies of the same file in the distribution.
+ 2. To make it easy to update the example to new TOMLAB versions.
+
+The tomlablic mex file will NOT be copied by this script. Put the SAL
+version of tomlablic.mex* into the directory manually.
+
+Setting paths
+-------------
+
+The following directory has to be in the system PATH environment
+variable:
+
+    <matlabroot>\bin\win32
+
+Making the Excel Add-In DLL
+---------------------------
+
+Build the example by running 'exmake.bat'.
+
+Running the example
+-------------------
+
+Open lpsolver.xls with Microsoft Excel. Click the SOLVE LP button to
+solve the problem using TOMALB /CPLEX.
+
+Troubleshooting
+---------------
+
+* If a message like this is displayed when running from the solver from
+  Excel:
+
+     Error using ==> license
+     Not enough input arguments.
+     Error in ==> tomlabVersion at 47
+
+  your license is not a stand alone (SAL) license. A special SAL license
+  is required to run stand alone versions of TOMLAB.
+
+More information on TOMLAB SAL
+=============================
+
+For more information on TOMLAB stand alone issues, see the TOMLAB SAL
+guide in the Manual section of our website: http://tomopt.com
+
+Contact TOMLAB
+==============
+
+Contact tomlab@tomopt.com if you have questions regarding this example
+or the SAL license.

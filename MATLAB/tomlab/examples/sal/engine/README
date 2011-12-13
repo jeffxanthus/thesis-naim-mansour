@@ -1,0 +1,97 @@
+
+TOMLAB MATLAB ENGINE EXAMPLE
+****************************
+
+Requirements
+============
+
+To build and run this example these requirements must be met:
+
+ * MATLAB 6.1 or above	
+ * TOMLAB license file for a TOMLAB QP solver.
+
+Files
+=====
+
+  exmake.bat       DOS batch script for building the example.
+  exmake.sh        Unix shell script for building the example.
+  README           This file.
+  tomeng.c         Source code file for the example.
+
+Building the example
+====================
+
+Setting paths
+-------------
+
+On Windows the following directory has to be in the system PATH
+environment variable:
+
+    <matlabroot>\bin\win32
+
+On Unix the shared object path environment variable has to be
+set to point to some directories in the MATLAB file tree. The
+environment variable in question has different names on different
+platforms. Here is a list:
+
+   Linux          LD_LIBRARY_PATH
+   Mac OS X       DYLD_LIBRARY_PATH
+   SUN            LD_LIBRARY_PATH
+
+If not already there, append the following paths to the variables:
+
+   <matlabroot>/extern/lib/<arch>:<matlabroot>/bin/<arch>
+
+where <arch> is a symbol for the platform running:
+
+   Linux (32-bit) glnx86
+   Mac OS X       mac
+   SUN            sol2
+
+See the MATLAB documentation for more information on this. It could be
+necessary to configure the compiler to handle floating point
+exceptions correctly.
+
+Making the example program executable
+-------------------------------------
+
+Build the example by running 'exmake.bat' on Windows or 'exmake.sh' on
+Linux. The MATLAB root directory is assumed to be in the environment
+variable MATLAB ($MATLAB on Unix and %MATLAB% on Windows).
+
+Running the example
+-------------------
+
+Run tomeng with to command line arguments: your Tomlab installation
+directory as the first argument, and the name of a QP solver as the
+second argument. Example:
+
+Windows:
+
+   > tomeng c:\tomlab cplex
+
+Unix:
+
+   > ./tomeng /usr/local/tomlab qpopt
+
+The Windows example above requires a demo or full license for CPLEX,
+and the Unix example requires a demo or full license for the Base
+Module.
+
+Troubleshooting
+---------------
+
+* If any of the steps fails when running the example program, make
+  sure you have:
+
+    * given the correct path to your Tomlab installation.
+    * a valid license for the solver chosen and the tomlablic file
+      available in the Tomlab directory.
+    * chosen a valid solver name.
+
+Contact TOMLAB
+==============
+
+Contact tomlab@tomlab.biz if you have questions regarding this
+example.
+

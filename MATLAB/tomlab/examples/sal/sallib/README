@@ -1,0 +1,111 @@
+
+TOMLAB STAND ALONE (SAL) SHARED LIBRARY EXAMPLE
+**********************************************
+
+Requirements
+============
+
+To build and run this example these requirements must be met:
+
+ * MATLAB Compiler 3.0.1 or 4
+   Information about the patch for MCC 3 to 3.0.1 is available at:
+   http://www.mathworks.com/support/solutions/data/1-19TL6.html?solution=1-19TL6
+ * IMPORTANT: TOMLAB STAND ALONE license file for TOMLAB /CPLEX.
+   DEMO USERS CAN NOT RUN THIS EXAMPLE! Contact tomlab@tomlab.biz for more
+   infomration about this.
+
+Files
+=====
+
+  application.c    Source code for the client application using the
+                   shared library.
+  copyexfiles.m    Script for copying the needed m-/mex-files into
+                   the working directory.
+  exmake3.bat      DOS batch script for building the example with MCC 3.
+  exmake3.sh       Linux sh script for building the example with MCC 3.
+  exmake4.bat      DOS batch script for building the example with MCC 4.
+  exmake4.sh       Linux sh script for building the example with MCC 4.
+  README           This file.
+  solveqp.m        A simple interface function to act between MATLAB
+                   and C/C++.
+
+Building the example
+====================
+
+Copying files
+-------------
+
+This example is not ready for building as is. The m-file 'copyexfiles.m'
+has to be executed in MATLAB in order to copy the needed files into
+this directory. There are two reasons for this:
+
+ 1. To not have multiple copies of the same file in the distribution.
+ 2. To make it easy to update the example to new TOMLAB versions.
+
+The tomlablic file will NOT be copied by this script. Put the SAL
+version of tomlablic.dll into the directory manually.
+
+Setting paths
+-------------
+
+On Windows, the following directory has to be in the system PATH
+environment variable:
+
+    <matlabroot>\bin\win32
+
+On Linux, add the following directory to the dynamic library path if
+an 'undefined reference to' error is encountered when compiling:
+
+    <matlabroot>/sys/os/glnx86
+
+Making the library and application
+----------------------------------
+
+On Windows:
+
+Build the example by running 'exmakeX.bat', where X is the version
+number of the MCC compiler; 3 or 4. Two files are created:
+'cplexqp.dll' and 'application.exe'.
+
+On Linux:
+
+Build the example by running 'exmakeX.sh', where X is the version
+number of your MCC compiler; 3 or 4. Two files are created:
+'cplexqp.so' and 'application'.
+
+Troubleshooting
+---------------
+
+* When compiling using MCC 3 several warning messages will be
+  printed, for example:
+
+     Warning: File: cplextl Line: 437 Column: 1
+     References to "lp_f" will produce a run-time error because it is an
+     undefined function or variable.
+
+  This will not be a problem for this example. All the warnings
+  are about code lines never executed.
+
+* If a message like this is displayed when running the application:
+
+     Error using ==> license
+     Not enough input arguments.
+     Error in ==> tomlabVersion at 47
+
+  your license is not a stand alone (SAL) license. A special SAL license
+  is required to run stand alone versions of TOMLAB.
+
+* If 'undefined reference to' errors are displayed while compiling under
+  Linux, see the 'Setting paths' section above.
+
+More information on TOMLAB SAL
+=============================
+
+For more information on TOMLAB stand alone issues, see the TOMLAB SAL
+guide in the Manual section of our website: http://tomlab.biz
+
+Contact TOMLAB
+==============
+
+Contact tomlab@tomlab.biz if you have questions regarding this example
+or the SAL license.
