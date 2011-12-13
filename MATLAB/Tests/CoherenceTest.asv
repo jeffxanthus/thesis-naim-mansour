@@ -1,0 +1,13 @@
+function [ output_args ] = CoherenceTest( input_args )
+%COHERENCETEST 
+
+I=eye(1000);
+DCTm=dctmtx(1000);
+
+cohm=zeros(
+
+for i=10:10:900
+    [coherence, coherence_un, coherence_sq] = Coherence(mtx)
+
+end
+
