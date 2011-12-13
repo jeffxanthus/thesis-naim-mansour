@@ -98,44 +98,57 @@ if length(M)>=1
 
 
     %Magical factor - renders 2-3dB extra on the missing sample SNR
+    missingRatio=length(M)/N;
     if ~(methodChoice==1 | methodChoice==2)
-        missingRatio=length(M)/N;
-        limit=1.1;
-           if missingRatio<=0.05
-            limit=1.1
-           elseif missingRatio<=0.4
-                limit=1.2
-           else
-                limit=1.3
-           end 
-        limit
-        stop=false;
-        k=1;
+    if (methodChoice==1 | methodChoice==2)
+        init=0.9;
+       if missingRatio<=0.05
+        init=0.9
+       elseif missingRatio<=0.4
+            init=0.8
+       else
+            init=0.7
+       end
+         limit=1;
+    else
+       limit=1.1;
+       if missingRatio<=0.05
+        limit=1.1
+       elseif missingRatio<=0.4
+            limit=1.2
+       else
+            limit=1.3
+       end 
+       init=1;
+    end
+    init
+    limit
+    stop=false;
+    k=1;
+    factor=1;
+    while ~stop
+        mlength=1;
         factor=1;
-        while ~stop
-            mlength=1;
-            factor=1;
-            while (k<=length(M)-1 && M(1,k+1)==M(1,k)+1)
-                mlength=mlength+1;
-                k=k+1;
-            end
-            if mlength>20
-                if mod(mlength,2)==0
-                    factor=[linspace(1,limit,mlength/2) linspace(limit,1,mlength/2)];
-                else
-                    factor=[linspace(1,limit,(mlength-1)/2) limit*1.01 linspace(limit,1,(mlength-1)/2)];
-                end
-            else
-                factor=ones(1,mlength);
-            end
-            size(r(1,M(1,k)-(mlength-1):M(1,k)))
-            size(factor)
-            r(1,M(1,k)-(mlength-1):M(1,k))=factor.*r(1,M(1,k)-(mlength-1):M(1,k));
+        while (k<=length(M)-1 && M(1,k+1)==M(1,k)+1)
+            mlength=mlength+1;
             k=k+1;
-            if k>length(M)
-                stop=true;
-            end
         end
+        mlength
+        if mlength>200
+            if mod(mlength,2)==0
+                factor=[linspace(init,limit,mlength/2) linspace(limit,init,mlength/2)];
+            else
+                factor=[linspace(init,limit,(mlength-1)/2) limit*1.01 linspace(limit,init,(mlength-1)/2)];
+            end
+        else
+            factor=ones(1,mlength);
+        end
+        r(1,M(1,k)-(mlength-1):M(1,k))=factor.*r(1,M(1,k)-(mlength-1):M(1,k));
+        k=k+1;
+        if k>length(M)
+            stop=true;
+        end
+    end
     end
     % r=limit.*r;
 

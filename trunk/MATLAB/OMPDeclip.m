@@ -111,7 +111,6 @@ while ~done
          end
       else
         x(activeSet)=lsqlin(A(:,activeSet),y);
-        disp('Normal lsq')
       end
 %       J=gradient(y-A(:,activeSet)*x(activeSet));
 %       H=J'*J;
