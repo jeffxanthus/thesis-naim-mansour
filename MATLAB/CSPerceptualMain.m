@@ -6,6 +6,7 @@ function [result,missingSamples] = CSPerceptualMain(signal, method, fs)
 %                3 for perceptual y =Ax
 %   Naim Mansour and Steven De Hertogh
 global methodChoice
+fL = 30;
 
 tic;
 %Some checks to make sure the input has the correct dimensions.
@@ -113,10 +114,12 @@ while i<=cst
     disp(['Now declipping frame ' int2str(i) ' out of ' int2str(cst)])
     if(method==1)
         [dummy U(:,i)]=CSDeclip(T(:,i));
+        masking = meanMaskingThreshold(U(:,i)');
     elseif (method==2)
         U(:,i)=CSDeclipAlternate(T(:,i));
     elseif (method==3)
         [dummy U(:,i)]=CSPerceptualDeclip(T(:,i), masking);
+        masking = meanMaskingThreshold(U(:,i)');
     end
     
     disp('Reconstructing...')    
@@ -138,7 +141,7 @@ while i<=cst
         summedPart=result(1,position:end)+currentBlock(1,1:shiftAmount);
         unalteredBlockPart=currentBlock(1,shiftAmount+1:end);
         result=[unalteredPart summedPart unalteredBlockPart];
-        masking = meanMaskingThreshold(result);
+        %masking = meanMaskingThreshold(result);
         position=position+shiftAmount-1;
     end
     i=i+1;

@@ -3,11 +3,14 @@ function [ H ] = alternatePerceptualWeightingMatrix( maskingThreshold )
 %   Steven De Hertogh
 
 K = length(maskingThreshold);
-A = 1./maskingThreshold;
+A = 10.^((1./maskingThreshold)/20);
 
 H = [];
 for i = 1:K
-    H(i,i) = abs(A(i));
+    H(i,i) = A(i);
+    if i > K-8
+        H(i,i) = A(K-8);
+    end
 end
 
 
