@@ -42,7 +42,22 @@ samples=samples';
 % A=DCTBase(N,N,-1);
 A=dctmtx(N)';
 B=A;
-A(M,:)=[]; 
+A(M,:)=0; 
+
+thetaClip = MaxS;
+%Create Bcon matrix (for positive extra constraint)
+Bcon = zeros(N);
+Bcon(Mp,:)=1;
+Bcon = Bcon.*B;
+thetaClipPos = zeros(N,1);
+thetaClipPos(Mp)=thetaClip;
+
+%Create Ccon matrix (for negative extra constraint)
+Ccon = zeros(N);
+Ccon(Mn,:)=1;
+Ccon = Ccon.*B;
+thetaClipNeg = zeros(N,1);
+thetaClipNeg(Mn) = thetaClip;
 
 if length(A)==0
     disp('Clipping length exceeds frame length')
@@ -50,11 +65,12 @@ if length(A)==0
 end
 
 %Calculate filtermatrix
-figure()
-plot(maskingThreshold)
-threshold = resample(maskingThreshold, length(A), length(maskingThreshold));
-W = perceptualWeightingMatrix(threshold);
-A = W.*A;
+%threshold = resample(maskingThreshold, length(A), length(maskingThreshold), 0);
+%W = alternatePerceptualWeightingMatrix(threshold);
+%A = W*A;
+
+%bla = samples' * W;
+%samples = bla';
 
 Mpos=zeros(N,1);
 Mpos(Mp,:)=1;
@@ -92,6 +108,9 @@ switch methodChoice
         disp('This option no longer exists.')
         disp('Too bad...')
         return;
+    case 6 %BP with extra constraints
+        x=BasisPursuit(A, samples, Bcon, Ccon, thetaClipPos, thetaClipNeg); 
+        
 end
 
 r=idct(x)';

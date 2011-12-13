@@ -391,8 +391,10 @@ else
     Ttm = [];
     Tnm = [];
     for i = 1:N/2
+        delt1 = FreqToBark(i*86);
         for n = 1:N/2
-            delt = FreqToBark(i*86) - FreqToBark(n*86);
+            delt2 = FreqToBark(n*86);
+            delt = delt1 - delt2;
             if (delt >= -3) && (delt < -1)
                 SF(i,n) = 17*delt - 0.4*Ptm2(n) + 11;
                 SFn(i,n) = 17*delt - 0.4*Pnm2(n) + 11;
@@ -409,8 +411,8 @@ else
                 SF(i,n) = -150;
                 SFn(i,n) = -150;
             end
-            Ttm(i,n) = Ptm2(n) - 0.275*FreqToBark(n*86) + SF(i,n) - 6.025;
-            Tnm(i,n) = Pnm2(n) - 0.175*FreqToBark(n*86) + SF(i,n) - 2.025;
+            Ttm(i,n) = Ptm2(n) - 0.275*delt2 + SF(i,n) - 6.025;
+            Tnm(i,n) = Pnm2(n) - 0.175*delt2 + SF(i,n) - 2.025;
         end
     end
     %size(Ttm)

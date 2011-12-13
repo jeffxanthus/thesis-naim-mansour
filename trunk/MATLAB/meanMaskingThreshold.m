@@ -11,7 +11,7 @@ for n = 2:numberofframes
 end
 
 threshold = masking;
-figure();
-plot(threshold);
+% figure();
+% plot(threshold);
 end
 
