@@ -1,4 +1,4 @@
-function [result,missingSamples] = CSPerceptualMain(signal, method, fs)
+function [result,missingSamples] = CSPerceptualMain(signal, method, fs, optim)
 %CSMain - Main function of the CS Declipping program.
 %   signal: The input audio signal.
 %   fs:     Sample rate in Hz. 
@@ -120,7 +120,7 @@ while i<=cst
     elseif (method==2)
         U(:,i)=CSDeclipAlternate(T(:,i));
     elseif (method==3)
-        [dummy U(:,i)]=CSPerceptualDeclip(T(:,i), masking);
+        [dummy U(:,i)]=CSPerceptualDeclip(T(:,i), masking, optim);
         masking = meanMaskingThreshold(U(:,i)');
     end
     
@@ -156,7 +156,7 @@ if(method==1)
 elseif(method == 2)
         nonMultipleRec=CSDeclipAlternate(nonMultiplePart);
 elseif(method == 3)
-        [dummy nonMultipleRec]=CSPerceptualDeclip(nonMultiplePart, masking);
+        [dummy nonMultipleRec]=CSPerceptualDeclip(nonMultiplePart, masking, optim);
 end
 
 result=[result nonMultipleRec];
