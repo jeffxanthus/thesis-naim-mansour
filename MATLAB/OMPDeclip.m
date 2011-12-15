@@ -110,7 +110,7 @@ while ~done
             disp('Error avoided')
          end
       else
-        x(activeSet)=lsqlin(A(:,activeSet),y);
+         x(activeSet)=lsqlin(A(:,activeSet),y);
       end
 %       J=gradient(y-A(:,activeSet)*x(activeSet));
 %       H=J'*J;

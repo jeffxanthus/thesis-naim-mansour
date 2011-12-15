@@ -13,11 +13,11 @@ if nargin < 2
     fileName='BachHymn.wav';
 end
 method=meth;
-methodChoices=[3]; 
-amountOfClippingLevels=8;
-amountOfSamples=3;
-clipping=[0.9 0.8 0.7 0.6 0.5 0.4 0.3 0.2];
-length=10000;
+methodChoices=[1 2]; 
+amountOfClippingLevels=3;
+amountOfSamples=2;
+clipping=[0.9993 0.997 0.994];
+length=50000;
 % ReconstructedMatrix=zeros(3,amountOfClippingLevels,amountOfSamples,length);
 fL=frameLength;
 
@@ -37,6 +37,8 @@ for k=methodChoices
         for j=1:amountOfSamples
             [data,largeData,mediumData,smallData,tinyData,fs,noBits] = InitializeTestVariables(fileName,200000+j*100000);
             input=Clip(mediumData,clipping(1,i)); 
+            [SNRorig ODGorig]=Evaluation(mediumData,input,fs,noBits)
+           
             [rsa csa]=size(input);
             origSamples=[];
             MaxS=max(input);

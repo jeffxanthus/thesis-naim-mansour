@@ -43,7 +43,7 @@ clippedAmount=(1-clip)*length(input);
 %         end
 %     end
 % end
-
+clippedAmount=round(clippedAmount);
 clippedAmount = round(clippedAmount);
 if nargin == 2
    if mod(round(clippedAmount),2)~=0
