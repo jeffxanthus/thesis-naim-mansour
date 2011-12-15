@@ -8,9 +8,19 @@ methodChoice = 6;
 sig = wavread(signal);
 sig = sig(:,1);
 sig = sig(200:800);
-result = CSPerceptualDeclip(Clipold(sig, 0.7)');
+clipped = Clipold(sig, 0.5)';
+result = CSPerceptualDeclip(clipped, maskingThreshold(sig'));
 SNR=10*log10(norm(sig,2).^2/norm(sig-idct(result),2).^2)
-SNRCLIP = 10*log10(norm(sig,2).^2/norm(sig-Clipold(sig,0.7)',2).^2)
+SNRCLIP = 10*log10(norm(sig,2).^2/norm(sig-clipped,2).^2)
 
+result = idct(result);
+
+figure();
+subplot(3,1,1);plot(clipped);
+title('Clipped signal')
+subplot(3,1,2);plot(result);
+title('Reconstructed signal')
+subplot(3,1,3);plot(result);
+title('Original signal')
 
 end
