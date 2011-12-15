@@ -1,4 +1,4 @@
-function [x,r] = CSPerceptualDeclip(data, maskingThreshold)
+function [x,r] = CSPerceptualDeclip(data, maskingThreshold, optim)
 %CSDECLIP - data is already clipped signal
 %Naim Mansour
 global methodChoice
@@ -98,7 +98,7 @@ samples = idct(bla');
     end
 
     %Solve the constrained L1 optimization (with lambda regularization)
-    switch methodChoice
+    switch optim
         case 1
             x=SolveOMP(A,samples,N,50); %--FAST FAVORITE SO FAR
         case 2
@@ -139,11 +139,11 @@ samples = idct(bla');
 %         else
        limit=1.1;
        if missingRatio<=0.05
-        limit=1.1
+        limit=1.1;
        elseif missingRatio<=0.4
-            limit=1.2
+            limit=1.2;
        else
-            limit=1.3
+            limit=1.3;
        end 
        init=1;
 %         end
@@ -157,7 +157,7 @@ samples = idct(bla');
                 mlength=mlength+1;
                 k=k+1;
             end
-            mlength
+            mlength;
             if mlength>20
                 if mod(mlength,2)==0
                     factor=[linspace(init,limit,mlength/2) linspace(limit,init,mlength/2)];
