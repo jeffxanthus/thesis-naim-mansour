@@ -11,16 +11,16 @@ SNRres=[];
 SNRmres=[];
 k=1;
 
-methodChoice=4;
+methodChoice=3;
 regularization=0;
 fL=30;
 
-for i=[0.98];% 0.75   0.7 0.65 0.6 0.55 0.5];
+for i=[0.99];% 0.75   0.7 0.65 0.6 0.55 0.5];
     i
     fL
     clip=i;
     disp(['Iteration ' int2str(k) ', for clipping ratio ' num2str(i)]);
-    [input, reconstruction, dummy1, dummy2, SNR, SNRm,SNROrig,SNRmorig,ODGmorig,ODGm]=Simulation(i,1,1,350000);
+    [input, reconstruction, dummy1, dummy2, SNR, SNRm,SNROrig,SNRmorig,ODGmorig,ODGm]=Simulation(i,0,1,350000);
     SNROrig
     SNR
     SNRmorig

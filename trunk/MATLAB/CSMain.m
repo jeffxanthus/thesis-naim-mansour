@@ -68,8 +68,7 @@ if mod(numberOfSamples*(frameOverlap/100),1)~=0
     disp('Illegal overlap ratio')
     return;
 end
-rs
-cs
+
 %Used to be able to calculate SNRm
 Miss=[];
 MaxS=max(signal);

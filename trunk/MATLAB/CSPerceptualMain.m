@@ -6,6 +6,8 @@ function [result,missingSamples] = CSPerceptualMain(signal, method, fs)
 %                3 for perceptual y =Ax
 %   Naim Mansour and Steven De Hertogh
 global methodChoice
+global clip
+global fL
 fL = 30;
 
 tic;

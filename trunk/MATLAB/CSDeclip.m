@@ -2,10 +2,9 @@ function [x,r] = CSDeclip(data)
 %CSDECLIP - data is already clipped signal
 %Naim Mansour
 global methodChoice
-global A
-global samples
+% global A
+% global samples
 global regularization
-
 
 [rs cs]=size(data);
 if(rs~=1)
@@ -28,7 +27,7 @@ for t=1:cs2 %border values possibly added to the clipped values - SOLVED
     elseif(((t==1 && data(1,t+1)-data(1,t)==0)  || (t==cs2 && data(1,t)-data(1,t-1)==0))... 
             || ((t~=1 && t~=cs2) && data(1,t-1)-data(1,t+1))==0)
         M=[M t];
-%         samples=[samples 0];
+        samples=[samples 0]; %or comment this line out (see line 48)
         if data(1,t)==MaxS
             Mp=[Mp t];
         else
@@ -46,7 +45,7 @@ if length(M)>=1
     % A=DCTBase(N,N,-1);
     A=dctmtx(N)';
     B=A;
-    A(M,:)=[]; 
+    A(M,:)=0; %or A(M,:)=[];
 
     if length(A)==0
         disp('Clipping length exceeds frame length')
@@ -92,6 +91,8 @@ if length(M)>=1
             disp('This option no longer exists.')
             disp('Too bad...')
             return;
+        case 6 %BP with extra constraints
+            x=BasisPursuit(A, samples, Bcon, Ccon, thetaClipPos, thetaClipNeg); 
     end
 
     r=idct(x)';
@@ -100,62 +101,62 @@ if length(M)>=1
     %Magical factor - renders 2-3dB extra on the missing sample SNR
     missingRatio=length(M)/N;
     if ~(methodChoice==1 | methodChoice==2)
-    if (methodChoice==1 | methodChoice==2)
-        init=0.9;
-       if missingRatio<=0.05
-        init=0.9
-       elseif missingRatio<=0.4
-            init=0.8
-       else
-            init=0.7
-       end
-         limit=1;
-    else
-       limit=1.1;
-       if missingRatio<=0.05
-        limit=1.1
-       elseif missingRatio<=0.4
-            limit=1.2
-       else
-            limit=1.3
-       end 
-       init=1;
-    end
-    init
-    limit
-    stop=false;
-    k=1;
-    factor=1;
-    while ~stop
-        mlength=1;
-        factor=1;
-        while (k<=length(M)-1 && M(1,k+1)==M(1,k)+1)
-            mlength=mlength+1;
-            k=k+1;
-        end
-        mlength
-        if mlength>200
-            if mod(mlength,2)==0
-                factor=[linspace(init,limit,mlength/2) linspace(limit,init,mlength/2)];
-            else
-                factor=[linspace(init,limit,(mlength-1)/2) limit*1.01 linspace(limit,init,(mlength-1)/2)];
-            end
+        if (methodChoice==1 | methodChoice==2)
+            init=0.9;
+           if missingRatio<=0.05
+            init=0.9
+           elseif missingRatio<=0.4
+                init=0.8
+           else
+                init=0.7
+           end
+             limit=1;
         else
-            factor=ones(1,mlength);
+           limit=1.1;
+           if missingRatio<=0.05
+            limit=1.1
+           elseif missingRatio<=0.4
+                limit=1.2
+           else
+                limit=1.3
+           end 
+           init=1;
         end
-        r(1,M(1,k)-(mlength-1):M(1,k))=factor.*r(1,M(1,k)-(mlength-1):M(1,k));
-        k=k+1;
-        if k>length(M)
-            stop=true;
+        init
+        limit
+        stop=false;
+        k=1;
+        factor=1;
+        while ~stop
+            mlength=1;
+            factor=1;
+            while (k<=length(M)-1 && M(1,k+1)==M(1,k)+1)
+                mlength=mlength+1;
+                k=k+1;
+            end
+            mlength
+            if mlength>20
+                if mod(mlength,2)==0
+                    factor=[linspace(init,limit,mlength/2) linspace(limit,init,mlength/2)];
+                else
+                    factor=[linspace(init,limit,(mlength-1)/2) limit*1.01 linspace(limit,init,(mlength-1)/2)];
+                end
+            else
+                factor=init.*ones(1,mlength);
+            end
+            r(1,M(1,k)-(mlength-1):M(1,k))=factor.*r(1,M(1,k)-(mlength-1):M(1,k));
+            k=k+1;
+            if k>length(M)
+                stop=true;
+            end
         end
-    end
     end
     % r=limit.*r;
 
-    if ~(methodChoice==1 | methodChoice==2)
+%     if ~(methodChoice==1 | methodChoice==2)
         data(1,M)=r(1,M);
         r=data;
-    end
+%     end
 else
     x=dct(data);
     r=data;
@@ -177,4 +178,3 @@ end
 % title('Spectral representation of reconstruction')
 % axis([0 N (min(abs(x))-1) (max(abs(x))+1)])
 end
-

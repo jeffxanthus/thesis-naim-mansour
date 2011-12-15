@@ -1,4 +1,4 @@
-function [SNRMatrix SNRorigMatrix ODGMatrix ODGorigMatrix] = OMPBPTest(meth,fileName,frameLength)
+function [SNRMatrix SNRorigMatrix ODGMatrix ODGorigMatrix ReconstructedSignal ReconstructedSamples] = OMPBPTest(meth,fileName,frameLength)
 %OMPBP 
 addpath('../Samples')
 addpath('../')
@@ -13,11 +13,11 @@ if nargin < 2
     fileName='BachHymn.wav';
 end
 method=meth;
-methodChoices=[3]; 
-amountOfClippingLevels=8;
-amountOfSamples=3;
-clipping=[0.9 0.8 0.7 0.6 0.5 0.4 0.3 0.2];
-length=10000;
+methodChoices=[1 2]; 
+amountOfClippingLevels=3;
+amountOfSamples=2;
+clipping=[0.999 0.98 0.93];
+length=50000;
 % ReconstructedMatrix=zeros(3,amountOfClippingLevels,amountOfSamples,length);
 fL=frameLength;
 
@@ -55,8 +55,8 @@ for k=methodChoices
             disp(['Now simulating for method ' num2str(k) ', clipping level ' num2str(clipping(1,i)) ', and sample ' num2str(j)])
             [ReconstructedSignal ReconstructedSamples]=CSMain(input,method,fs);
             
-            [SNR ODG]=Evaluation(smallData,ReconstructedSignal,fs,noBits)
-            [SNRorig ODGorig]=Evaluation(smallData,input,fs,noBits)
+            [SNR ODG]=Evaluation(mediumData,ReconstructedSignal,fs,noBits)
+            [SNRorig ODGorig]=Evaluation(mediumData,input,fs,noBits)
            
 %             [SNR dummy3]=Evaluation(originalSamples,ReconstructedSamples,fs,noBits);
 %             [SNRorig dummy4]=Evaluation(originalSamples,originalClipped,fs,noBits);
