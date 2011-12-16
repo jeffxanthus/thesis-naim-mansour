@@ -13,10 +13,10 @@ if nargin < 2
     fileName='BachHymn.wav';
 end
 method=meth;
-methodChoices=[1 2]; 
+methodChoices=[3]; 
 amountOfClippingLevels=3;
 amountOfSamples=2;
-clipping=[0.9993 0.997 0.994];
+clipping=[0.75  0.62  0.5  0.35];
 length=50000;
 % ReconstructedMatrix=zeros(3,amountOfClippingLevels,amountOfSamples,length);
 fL=frameLength;

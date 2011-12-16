@@ -4,7 +4,7 @@ function [input,reconstruction,origSamples, missingSamples,SNR,SNRm,SNROrig,SNRm
 %   size: 1=small, 2=medium, 3=large
 %   method: 1=> Ax=y, 2=>Ax+Be=y
 
-[data, largeData, mediumData, smallData, tinyData, fs, noBits]=InitializeTestVariables('BeethoP5.wav',offSet);
+[data, largeData, mediumData, smallData, tinyData, fs, noBits]=InitializeTestVariables('bach_partita.wav',offSet);
 
 switch size
     case {0}
@@ -24,6 +24,8 @@ if nargin > 4
 else
     input=Clip(dataToUse,clip);
 end
+
+sound(input,fs)
 
 [SNROrig ODGOrig]=Evaluation(dataToUse,input,fs); 
 
