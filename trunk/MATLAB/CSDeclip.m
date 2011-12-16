@@ -51,7 +51,22 @@ if length(M)>=1
         disp('Clipping length exceeds frame length')
         return;
     end
+    
+    thetaClip = MaxS;
+    %Create Bcon matrix (for positive extra constraint)
+    Bcon = zeros(N);
+    Bcon(Mp,:)=1;
+    Bcon = Bcon.*B;
+    thetaClipPos = zeros(N,1);
+    thetaClipPos(Mp)=thetaClip;
 
+    %Create Ccon matrix (for negative extra constraint)
+    Ccon = zeros(N);
+    Ccon(Mn,:)=1;
+    Ccon = Ccon.*B;
+    thetaClipNeg = zeros(N,1);
+    thetaClipNeg(Mn) = thetaClip;
+    
     %Extra constraints
     MclA=zeros(N,N);
     MclA(Mp,:)=-B(Mp,:);
