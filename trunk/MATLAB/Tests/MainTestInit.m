@@ -1,16 +1,16 @@
-function [SNRM1 SNRORIG1 ODG1 ODGORIG1 Rsig1 Rsam1 SNRM2 SNRORIG2 ODG2 ODGORIG2 Rsig2 Rsam2 SNRM3 SNRORIG3 ODG3 ODGORIG3 Rsig3 Rsam3] = MainTestInit()
+function [SNRM2 SNRORIG2 ODG2 ODGORIG2 Rsig2 Rsam2 SNRM3 SNRORIG3 ODG3 ODGORIG3 Rsig3 Rsam3] = MainTestInit()
 %MAINTESTINIT
 
 
 % [SNRM2 SNRORIG2]=OMPBPTest(1,'BeethoP5.wav');
 % [SNRM3 SNRORIG3]=OMPBPTest(1,'Forsake2.wav');
 % [SNRM2 SNRORIG2]=OMPBPTest(1,'BachHymn.wav');
-[SNRM1 SNRORIG1 ODG1 ODGORIG1 Rsig1 Rsam1]=OMPBPTest(1,'bach_partita.wav',30);
-save('test1.mat', 'SNRM1', 'SNRORIG1', 'ODG1', 'ODGORIG1','Rsig', 'Rsam');
-[SNRM2 SNRORIG2 ODG2 ODGORIG2 Rsig2 Rsam2]=OMPBPTest(1,'BeethoP5.wav',30);
-save('test2.mat', 'SNRM2', 'SNRORIG2', 'ODG2', 'ODGORIG2');
-[SNRM3 SNRORIG3 ODG3 ODGORIG3 Rsig3 Rsam3]=OMPBPTest(1,'FolkMusic.wav',30);
-save('test3.mat', 'SNRM3', 'SNRORIG3', 'ODG3', 'ODGORIG3');
+% [SNRM1 SNRORIG1 ODG1 ODGORIG1 Rsig1 Rsam1]=OMPBPTest(1,'bach_partita.wav',30);
+% save('thetest1.mat', 'SNRM1', 'SNRORIG1', 'ODG1', 'ODGORIG1','Rsig1', 'Rsam1');
+[SNRM2 SNRORIG2 ODG2 ODGORIG2 Rsig2 Rsam2]=OMPBPTest(1,'Secret_1.wav',30);
+save('thetest2.mat', 'SNRM2', 'SNRORIG2', 'ODG2', 'ODGORIG2','Rsig2','Rsam2');
+[SNRM3 SNRORIG3 ODG3 ODGORIG3 Rsig3 Rsam3]=OMPBPTest(1,'FixYou.wav',30);
+save('thetest3.mat', 'SNRM3', 'SNRORIG3', 'ODG3', 'ODGORIG3','Rsig3','Rsam3');
 % [SNRM4 SNRORIG4 ODG4 ODGORIG4 Rsig4 Rsam4]=OMPBPTest(1,'Secret_1.wav',30);
 % save('test4.mat', 'SNRM4', 'SNRORIG4', 'ODG4', 'ODGORIG4');
 
