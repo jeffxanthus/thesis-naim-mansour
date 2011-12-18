@@ -86,9 +86,9 @@ for (i = -Fstart:Np-1)
         PQframeMOV (i, MOVI);   % Output is in global MOVC
 
         % Print the MOV precursors
-        if (PQopt.Ni ~= 0 & mod (i, PQopt.Ni) == 0)
-            PQprtMOVCi (Nchan, i, MOVC);
-        end
+%         if (PQopt.Ni ~= 0 & mod (i, PQopt.Ni) == 0)
+%             PQprtMOVCi (Nchan, i, MOVC);
+%         end
     end
 end
 

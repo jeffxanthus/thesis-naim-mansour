@@ -113,7 +113,7 @@ for j=1:cst
     if(method==1)
         [dummy U(:,j)]=CSDeclip(T(:,j));
     else
-        U(:,j)=CSDeclipAlternate(T(:,j));
+        [U(:,j) dummy]=CSDeclipAlternate(T(:,j));
     end
     subplot(2,1,1);plot(U(:,j),'-');
     subplot(2,1,2);plot(T(:,j),'-');
@@ -122,7 +122,7 @@ end
 if(method==1)
         [dummy nonMultipleRec]=CSDeclip(nonMultiplePart);
     else
-        nonMultipleRec=CSDeclipAlternate(nonMultiplePart);
+        [nonMultipleRec dummy]=CSDeclipAlternate(nonMultiplePart);
 end
 %   U=T;
 %   nonMultipleRec=nonMultiplePart; 

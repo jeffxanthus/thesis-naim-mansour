@@ -1,4 +1,4 @@
-function [SNRMatrix SNRorigMatrix ODGMatrix ODGorigMatrix ReconstructedSignal ReconstructedSamples] = OMPBPTest(meth,fileName,frameLength)
+function [SNRMatrix SNRorigMatrix ODGMatrix ODGorigMatrix ReconstructedSignal ReconstructedSamples] = OMPBPTest(meth,fileName,frameLength,clipping1,clipping2,mC)
 %OMPBP 
 addpath('../Samples')
 addpath('../')
@@ -13,10 +13,10 @@ if nargin < 2
     fileName='BachHymn.wav';
 end
 method=meth;
-methodChoices=[3]; 
+methodChoices=mC; 
 amountOfClippingLevels=3;
 amountOfSamples=2;
-clipping=[0.75  0.62  0.5  0.35];
+clipping=[clipping1; clipping2];
 length=50000;
 % ReconstructedMatrix=zeros(3,amountOfClippingLevels,amountOfSamples,length);
 fL=frameLength;
@@ -32,13 +32,13 @@ ODGorigMatrix=zeros(3,amountOfClippingLevels);
 t=1;
 for k=methodChoices
     methodChoice=k;
+    try
     for i=1:amountOfClippingLevels
-         clip=clipping(1,i);
-        for j=1:amountOfSamples
-            [data,largeData,mediumData,smallData,tinyData,fs,noBits] = InitializeTestVariables(fileName,200000+j*100000);
-            input=Clip(mediumData,clipping(1,i)); 
+         for j=1:amountOfSamples
+            [data,largeData,mediumData,smallData,tinyData,fs,noBits] = InitializeTestVariables(fileName,(j-1)*600000+1);
+            clip=clipping(j,i);
+            input=Clip(mediumData,clip); 
             [SNRorig ODGorig]=Evaluation(mediumData,input,fs,noBits)
-           
             [rsa csa]=size(input);
             origSamples=[];
             MaxS=max(input);
@@ -74,6 +74,17 @@ for k=methodChoices
         SNRorigMatrix(t,i)=SNRorigMatrix(t,i)./amountOfSamples;
         ODGMatrix(t,i)=ODGMatrix(t,i)./amountOfSamples;
         ODGorigMatrix(t,i)=ODGorigMatrix(t,i)./amountOfSamples;
+    end
+    catch error
+        rethrow(error)
+        error
+        SNRMatrix 
+        SNRorigMatrix 
+        ODGMatrix 
+        ODGorigMatrix 
+        ReconstructedSignal 
+        ReconstructedSamples
+        pause
     end
     t=t+1;
 end
