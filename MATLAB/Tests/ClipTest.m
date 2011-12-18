@@ -1,22 +1,57 @@
 function [clips] = ClipTest(fileName)
 %CLIPTEST 
+addpath('../')
 
-for t=1:5
-    [data,largeData,mediumData,smallData,tinyData,fs,noBits] = InitializeTestVariables(fileName,t*100000);
+[data,largeData,mediumData,smallData,tinyData,fs,noBits] = InitializeTestVariables(fileName,600000);
 
-    data=smallData;
-    clipVec=[0.9 0.8 0.7 0.6 0.5 0.4 0.3 0.2];
-    originalSize=length(data);
-    newSize=zeros(8,1);
-
-    for i=1:8
-        clippedData=Clip(data,clipVec(1,i));
-        for j=1:originalSize
-            if data(1,j)-clippedData(1,j)~=0
-                newSize(i,1)=newSize(i,1)+1;
-            end
-        end
-        newSize(i,1)=newSize(i,1)./originalSize;
+PEAQ=[10 10 10];
+clip=[0.5 0.45 0.42];
+t=1;
+while (PEAQ(1,1)>-1 || PEAQ(1,2)>-2 || PEAQ(1,3)>-3)
+    disp(['Iteration ' int2str(t)])
+    PEAQ
+    clip
+    if PEAQ(1,1)>-1
+        clip(1,1)=clip(1,1)-0.01;
+        clippedData=Clip(mediumData,clip(1,1));
+        [SNR ODG]=Evaluation(mediumData,clippedData,44000,16);
+        PEAQ(1,1)=ODG;
     end
-    clips=[clipVec ; newSize']
+    if PEAQ(1,2)>-2
+        clip(1,2)=clip(1,2)-0.01;
+        clippedData=Clip(mediumData,clip(1,2));
+        [SNR ODG]=Evaluation(mediumData,clippedData,44000,16);
+        PEAQ(1,2)=ODG;
+    end
+    if PEAQ(1,3)>-3
+        clip(1,3)=clip(1,3)-0.01;
+        clippedData=Clip(mediumData,clip(1,3));
+        [SNR ODG]=Evaluation(mediumData,clippedData,44000,16);
+        PEAQ(1,3)=ODG;
+    end
+    t=t+1;
+end
+PEAQ
+clip
+        
+        
+% for t=1:5
+%     [data,largeData,mediumData,smallData,tinyData,fs,noBits] = InitializeTestVariables(fileName,0*100000);
+% 
+%     data=mediumData;
+%     clipVec=[0.76 0.8 0.7 0.6 0.5 0.4 0.3 0.2];
+%     originalSize=length(data);
+%     newSize=zeros(8,1);
+%     for i=1:8
+%         clippedData=Clip(data,clipVec(1,i));
+%         [SNR ODG]=Evaluation(mediumData,clippedData,44000,16)
+%         pause
+%         for j=1:originalSize
+%             if data(1,j)-clippedData(1,j)~=0
+%                 newSize(i,1)=newSize(i,1)+1;
+%             end
+%         end
+%         newSize(i,1)=newSize(i,1)./originalSize;
+%     end
+%     clips=[clipVec ; newSize']
 end

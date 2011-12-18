@@ -1,8 +1,8 @@
-function [r,A] = CSDeclipAlternate(data)
+function [r,x] = CSDeclipAlternate(data)
 %CSDECLIP - data is already clipped signal
 % Author: Naim Mansour
 global methodChoice
-
+disp('AxBe method')
 [rs cs]=size(data);
 if(rs~=1)
     data=data';
@@ -38,6 +38,7 @@ samples=data';
 if length(E)>=1
     %Remove all rows in the DCT base, according to the sampling matrix!
     A=DCTBase(N,N,-1);
+    F=A;
     % A(E,:)=0; %Important, removing the row, not making it zero!
 
     if max(A)==0
@@ -59,13 +60,40 @@ if length(E)>=1
     end
     A=Re*A*delta;
     samples=Re*samples;
+    
+    
+    thetaClip = MaxS;
+    %Create Bcon matrix (for positive extra constraint)
+    Bcon = zeros(N);
+    Bcon(Mp,:)=1;
+    Bcon = Bcon.*F;
+    thetaClipPos = zeros(N,1);
+    thetaClipPos(Mp)=thetaClip;
 
+    %Create Ccon matrix (for negative extra constraint)
+    Ccon = zeros(N);
+    Ccon(Mn,:)=1;
+    Ccon = Ccon.*F;
+    thetaClipNeg = zeros(N,1);
+    thetaClipNeg(Mn) = thetaClip;
+    
+    %Extra constraints
+    MclA=zeros(N,N);
+    MclA(Mp,:)=-F(Mp,:);
+    MclA(Mn,:)=F(Mn,:);
+    eps=1.0;
+    offSetP=-max(samples)*eps;
+    offSetN=min(samples)*eps;
+    theta=(max(offSetP,offSetN)+5).*ones(N,1);
+    theta(Mp,:)=offSetP;
+    theta(Mn,:)=offSetN;
+    
     %Solve the constrained L1 optimization (with lambda regularization)
     switch methodChoice
         case 1
             Delta_x=SolveOMP(A,samples,N,50); %--FAST FAVORITE SO FAR
         case 2
-            Delta_x=OMPDeclip(A,samples,N,MclA,50); %--FAST FAVORITE SO FAR - NOT USABLE YET
+            Delta_x=OMPDeclip(A,samples,N,MclA,theta,80); %--FAST FAVORITE SO FAR - NOT USABLE YET
         case 3 
             Delta_x=SolveBP(A,samples,N,50,0.01,1e-4); %Investigate parameter impact
         case 4
