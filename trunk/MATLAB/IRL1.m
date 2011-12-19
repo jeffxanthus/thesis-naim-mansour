@@ -25,7 +25,6 @@ while (it<iterCount) %norm(x-xNew)>eps &&
     B=A/W;
     xNew=SolveBP(B,y,N,maxIters,lambda,OptTol);
     xNew=W\xNew;
-    close all;
 %     subplot(2,1,1);plot(xNew)
 %     subplot(2,1,2);plot(idct(xNew))
 %     pause

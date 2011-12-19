@@ -53,12 +53,12 @@ if length(E)>=1
     B(:,X)=[];
 
     Re=I-B*pinv(B);
-
     delta=eye(N);
+    ReA=Re*A;
     for i=1:N
-        delta(i,i)=1./norm(Re*A(:,i),2);
+        delta(i,i)=1./norm(ReA(:,i),2);
     end
-    A=Re*A*delta;
+    A=ReA*sparse(delta);
     samples=Re*samples;
     
     
@@ -81,12 +81,14 @@ if length(E)>=1
     MclA=zeros(N,N);
     MclA(Mp,:)=-F(Mp,:);
     MclA(Mn,:)=F(Mn,:);
-    eps=1.0;
+    eps=0.7;
     offSetP=-max(samples)*eps;
     offSetN=min(samples)*eps;
-    theta=(max(offSetP,offSetN)+5).*ones(N,1);
+    theta=(max(abs(offSetP),abs(offSetN)))*1.5.*ones(N,1);
     theta(Mp,:)=offSetP;
     theta(Mn,:)=offSetN;
+    
+    MclA=MclA*sparse(delta);
     
     %Solve the constrained L1 optimization (with lambda regularization)
     switch methodChoice

@@ -1,4 +1,4 @@
-function [SNRMatrix SNRorigMatrix ODGMatrix ODGorigMatrix ReconstructedSignal ReconstructedSamples] = OMPBPTest(meth,fileName,frameLength,clipping1,clipping2,mC)
+function [SNRMatrix SNRorigMatrix ODGMatrix ODGorigMatrix ReconstructedSignal OriginalSignal] = OMPBPTest(meth,fileName,frameLength,clipping1,clipping2,mC)
 %OMPBP 
 addpath('../Samples')
 addpath('../')
@@ -15,7 +15,7 @@ end
 method=meth;
 methodChoices=mC; 
 amountOfClippingLevels=3;
-amountOfSamples=2;
+amountOfSamples=1;
 clipping=[clipping1; clipping2];
 length=50000;
 % ReconstructedMatrix=zeros(3,amountOfClippingLevels,amountOfSamples,length);
@@ -37,7 +37,8 @@ for k=methodChoices
          for j=1:amountOfSamples
             [data,largeData,mediumData,smallData,tinyData,fs,noBits] = InitializeTestVariables(fileName,(j-1)*600000+1);
             clip=clipping(j,i);
-            input=Clip(mediumData,clip); 
+            input=Clip(mediumData,clip);
+            OriginalSignal=input;
             [SNRorig ODGorig]=Evaluation(mediumData,input,fs,noBits)
             [rsa csa]=size(input);
             origSamples=[];
