@@ -56,6 +56,8 @@ tic
 [sol, slack, v, rc, f_k, ninf, sinf, Inform, basis] = cplex(f, Aeq, x_L, x_U, beq, b_U, [], [], [], [], [],[], [], [], [], [], H, [], [], [], [], [], [], [], zeros(size(Aeq,1)+size(Aeq,2),1));
 toc
 
+%sol = SolveBP(Aeq, beq, 4*m, 0.0003);
+
 
 x = sol(2*m+1:2*m+n) - sol(2*m+n+1:2*m+2*n);
 
