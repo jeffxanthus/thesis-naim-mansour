@@ -71,9 +71,9 @@ if length(M)>=1
 %Calculate filtermatrix
 threshold = resample(maskingThreshold, length(A), length(maskingThreshold), 0);
 W = alternatePerceptualWeightingMatrix(threshold);
-%A = A*W;
+%A = A\W;
 
-bla = dct(samples') * (1.3*W);
+bla = dct(samples') * (1*W);
 samples = idct(bla');
 
     %bla = samples' * W;
@@ -100,14 +100,18 @@ samples = idct(bla');
     %Solve the constrained L1 optimization (with lambda regularization)
     switch optim
         case 1
+            disp('L0')
             x=SolveOMP(A,samples,N,50); %--FAST FAVORITE SO FAR
         case 2
-            x=OMPDeclip(A,samples,N,MclA,50); %--FAST FAVORITE SO FAR
+            disp('L0 bounded')
+            x=OMPDeclip(A,samples,N,MclA,theta,80); %--FAST FAVORITE SO FAR
         case 3 
-            x=SolveBP(A,samples,N,50,regularization,1e-4); %Investigate parameter impact
+            disp('L1 unbounded')
+            x=SolveBP(A,samples,N,50,0.003,1e-4); %Investigate parameter impact
     %         options = optimset('Algorithm','interior-point','Display','on');
     %         [x, fval]=fmincon(@L1Norm,offSet*ones(N,1),MclA,offSet*ones(length(MclA),1),[],[],[],[],@L2Norm,options);
         case 4
+            disp('IRL1')
             x=IRL1(A,samples,N,50,0,1e-4); %Development in progress
     %           x=Threshold_ISD_1D(A,samples);
         case 5
@@ -117,8 +121,12 @@ samples = idct(bla');
             disp('This option no longer exists.')
             disp('Too bad...')
             return;
-        case 6 %BP with extra constraints
+        case 6 %BP denoising with extra constraints
+            disp('L1 bounded denoising')
             x=BasisPursuit(A, samples, Bcon, Ccon, thetaClipPos, thetaClipNeg); 
+        case 7 %BP normaal with extra constraints
+            disp('L1 bounded fast')
+            x=BasisPursuitFast(A, samples, Bcon, Ccon, thetaClipPos, thetaClipNeg); 
     end
     
     r=idct(x)';

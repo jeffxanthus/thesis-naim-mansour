@@ -13,10 +13,13 @@ end
 if( input == 1 )
     Tq = [];
     for f = 1:22000
-         Tq(f) = 3.64*(f/1000)^(-0.8) - 65*exp(-0.6*(f/1000-3.3)^2) + 10^(-3) * (f/1000)^4;
+         Tq(f) = 3.64*(f/1000)^(-0.8) - 6.5*exp(-0.6*((f/1000)-3.3)^2) + (10^(-3)) * (f/1000)^4;
     end
-
+    %figure()
+    %plot(Tq)
     threshold=(downsample(Tq, 86));
+   % figure()
+    %plot(threshold)
 else
 
     in = input';
@@ -47,7 +50,8 @@ else
         w = [];
        for n = 1:N
            w(n) = 1/2*(1-cos(2*pi*n/N));
-           z(k) = z(k) + w(n)*in(n,1)*exp(-j*2*pi*k*n/N);
+           %z(k) = z(k) + w(n)*in(n,1)*exp(-j*2*pi*k*n/N);
+           z(k) = z(k) + w(n)*in(n,1)*cos(pi/N*(n+1/2)*k);
        end
        P(k) = PN + 10*log10(abs(z(k))^2);
     end
@@ -186,7 +190,7 @@ else
     % Absolute threshold
     Tq = [];
     for f = 1:22000
-        Tq(f) = 3.64*(f/1000)^(-0.8) - 65*exp(-0.6*(f/1000-3.3)^2) + 10^(-3) * (f/1000)^4;
+        Tq(f) = 3.64*(f/1000)^(-0.8) - 6.5*exp(-0.6*(f/1000-3.3)^2) + 10^(-3) * (f/1000)^4;
     end
 
     tq=(downsample(Tq, 86));
