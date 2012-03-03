@@ -1,4 +1,4 @@
-function [input,reconstruction,origSamples, missingSamples,SNR,SNRm,SNROrig,SNRmorig,ODGmorig,ODGm] = Simulation(clip,size,method,offSet,clipamount)
+function [input,reconstruction,origSamples, missingSamples,SNR,SNRm,SNROrig,SNRmorig,ODG,ODGOrig] = Simulation(clip,size,method,offSet,clipamount)
 %TESTSUITE Summary of this function goes here
 %   clip: clipping percentage (between 0 & 1)
 %   size: 1=small, 2=medium, 3=large

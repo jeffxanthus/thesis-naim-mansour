@@ -1,4 +1,4 @@
-function [input reconstruction SNRres SNRmres] = TestSuite()
+function [input reconstruction SNR SNROrig ODG ODGorig] = TestSuite()
 %TESTSUITE 
 global methodChoice
 global regularization
@@ -11,16 +11,16 @@ SNRres=[];
 SNRmres=[];
 k=1;
 
-methodChoice=4;
+methodChoice=2;
 regularization=0;
 fL=30;
 
-for i=[0.55];% 0.75   0.7 0.65 0.6 0.55 0.5];
+for i=[0.48];% 0.75   0.7 0.65 0.6 0.55 0.5];
     i
     fL
     clip=i;
     disp(['Iteration ' int2str(k) ', for clipping ratio ' num2str(i)]);
-    [input, reconstruction, dummy1, dummy2, SNR, SNRm,SNROrig,SNRmorig,ODGmorig,ODGm]=Simulation(i,1,1,300000);
+    [input, reconstruction, dummy1, dummy2, SNR, SNRm,SNROrig,SNRmorig,ODG,ODGorig]=Simulation(i,1,2,250000);
     SNROrig
     SNR
     SNRmorig

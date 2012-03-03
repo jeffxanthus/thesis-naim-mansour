@@ -35,6 +35,7 @@ for k=methodChoices
     try
     for i=1:amountOfClippingLevels
          for j=1:amountOfSamples
+             j=j+1;
             [data,largeData,mediumData,smallData,tinyData,fs,noBits] = InitializeTestVariables(fileName,(j-1)*600000+1);
             clip=clipping(j,i);
             input=Clip(mediumData,clip);
