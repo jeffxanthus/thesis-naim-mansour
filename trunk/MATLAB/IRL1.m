@@ -12,10 +12,12 @@ xNew=1*10^5.*ones(N,1);
 eps=1*10^(-4);
 
 x=zeros(N,1);
-x0=SolveBP(A,y,N,maxIters,lambda,OptTol);
+% x0=SolveBP(A,y,N,maxIters,lambda,OptTol);
+x0=ones(N,1);
 
 fFf=0.95;
-epsilon=chooseEpsilons(x0,N,fFf);
+% epsilon=chooseEpsilons(x0,N,fFf);
+epsilon=0.1;
 
 %If BP: min lambda*||x||1 + ||Ax-b||2
 %Weighted BP: y=Wx, x=W^(-1)x, min lambda*||y||1 + ||AW^(-1)y-b||2
