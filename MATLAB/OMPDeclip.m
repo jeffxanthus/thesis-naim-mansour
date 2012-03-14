@@ -105,8 +105,9 @@ while ~done
 %              theta=0.9.*theta;
 %              [x(activeSet),rnorm,res,error]=lsqlin(A(:,activeSet),y,MclA(:,activeSet),theta,[],[],[x(activeSet); mean(x(activeSet))]);
 %          end
-         if (error==-2 || error==-3 || error==-4 || error==-7)
+         if (error==0 || error==-2 || error==-3 || error==-4 || error==-5 || error==-6 || error==-7)
             x(activeSet)=lsqlin(A(:,activeSet),y);
+            pause
             disp('Error avoided')
          end
       else
