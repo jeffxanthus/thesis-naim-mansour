@@ -115,8 +115,8 @@ if length(M)>=1
 
     %Magical factor - renders 2-3dB extra on the missing sample SNR
     missingRatio=length(M)/N;
-    if ~(methodChoice==1 | methodChoice==2)
-        if (methodChoice==1 | methodChoice==2)
+    if ~(methodChoice==1 || methodChoice==2)
+        if (methodChoice==1 || methodChoice==2)
             init=0.9;
            if missingRatio<=0.05
             init=0.9
@@ -149,7 +149,6 @@ if length(M)>=1
                 mlength=mlength+1;
                 k=k+1;
             end
-            mlength
             if mlength>20
                 if mod(mlength,2)==0
                     factor=[linspace(init,limit,mlength/2) linspace(limit,init,mlength/2)];

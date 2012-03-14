@@ -1,0 +1,17 @@
+function [clip, signal] = clipOptimize(fileName,PEAQDesired)
+%CLIPOPTIMIZE Summary of this function goes here
+%   Detailed explanation goes here
+fs=44100;
+inputSignal=wavread(fileName);
+PEAQ=5;
+i=0.9973;
+while PEAQ>PEAQDesired
+    i=i-0.001;
+    clippedSignal=Clip(inputSignal,i)';
+    [dummy PEAQ]=Evaluation(inputSignal, clippedSignal,fs,16);
+    PEAQ
+    i
+end
+
+end
+

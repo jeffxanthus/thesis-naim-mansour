@@ -9,6 +9,7 @@ function [result,missingSamples] = CSMain(signal, method, fs)
 global methodChoice
 global clip
 global fL
+global LPFactor
 tic;
 
 %Some checks to make sure the input has the correct dimensions.
@@ -153,6 +154,10 @@ for k=2:cst
 end
 
 result=[result nonMultipleRec];
+
+if LPFactor
+    result=ALPFilter(signal,result);
+end
 toc;
 
 missingSamples=[];
